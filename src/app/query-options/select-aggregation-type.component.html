@@ -1,0 +1,11 @@
+<div>
+    Aggregation Type
+    <ng-select [items]=this.aggregationType
+               [multiple]="false"
+               placeholder="By Player"
+               bindLabel="label"
+               bindValue="value"
+               [virtualScroll]="true"
+               (change)="selectAggregationType($event)">
+    </ng-select>
+</div>

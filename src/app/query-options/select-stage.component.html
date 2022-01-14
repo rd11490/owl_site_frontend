@@ -1,0 +1,9 @@
+<div>
+    Stage
+    <ng-select [items]="this.stages | async"
+               [multiple]="true"
+               placeholder="Stage"
+               [virtualScroll]="true"
+               (change)="selectStages($event)">
+    </ng-select>
+</div>

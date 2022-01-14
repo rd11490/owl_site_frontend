@@ -1,0 +1,11 @@
+<div>
+    Players
+    <ng-select [items]="this.players | async"
+               [multiple]="true"
+               placeholder="Player"
+               bindLabel="player"
+               bindValue="player"
+               [virtualScroll]="true"
+               (change)="selectPlayer($event)">
+    </ng-select>
+</div>

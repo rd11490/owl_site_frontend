@@ -1,0 +1,9 @@
+<div>
+    Opponent Teams
+    <ng-select [items]="this.teams | async"
+               [multiple]="true"
+               placeholder="Teams"
+               [virtualScroll]="true"
+               (change)="selectOpponentTeams($event)">
+    </ng-select>
+</div>

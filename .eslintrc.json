@@ -1,0 +1,42 @@
+{
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "ignorePatterns": [
+    "projects/**/*",
+    "*.js",
+    "*.html",
+    "*.css"
+  ],
+  "overrides": [
+    {
+      "extends": [
+        "eslint:recommended",
+        "plugin:@angular-eslint/recommended",
+        "plugin:prettier/recommended"
+      ],
+      "files": [
+        "*.ts"
+      ],
+      "parserOptions": {
+        "createDefaultProgram": true,
+        "project": [
+          "tsconfig.json",
+          "e2e/tsconfig.json"
+        ]
+      },
+      "rules": {
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "prefix": "app",
+            "style": "camelCase",
+            "type": "attribute"
+          }
+        ]
+      }
+    }
+  ],
+  "root": true
+}

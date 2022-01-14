@@ -1,0 +1,9 @@
+<div>
+    Map Type
+    <ng-select [items]="this.mapTypes | async"
+               [multiple]="true"
+               placeholder="Map Type"
+               [virtualScroll]="true"
+               (change)="selectMapTypes($event)">
+    </ng-select>
+</div>

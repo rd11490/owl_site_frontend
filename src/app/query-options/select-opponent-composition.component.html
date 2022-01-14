@@ -1,0 +1,11 @@
+<div>
+    Opponent Compositions
+    <ng-select [items]="this.compositions | async"
+               [multiple]="false"
+               placeholder="Composition"
+               bindLabel="label"
+               bindValue="cluster"
+               [virtualScroll]="true"
+               (change)="selectComposition($event)">
+    </ng-select>
+</div>

@@ -1,0 +1,18 @@
+<div>
+  <selector></selector>
+  <button class="search-button" (click)="search()">Search</button>
+</div>
+<br>
+<br>
+
+<div *ngIf='queryResponse.data.length == 0 && !loading && !loaded'>
+  <h2 align='center'>Query for stats then build the table you want to see</h2>
+</div>
+
+<div *ngIf='loading'>
+  <h2 align='center'>Loading...</h2>
+</div>
+
+<div *ngIf='queryResponse.data.length == 0 && loaded'>
+  <h2 align='center'>Query returned no data, please try a different query</h2>
+</div>
