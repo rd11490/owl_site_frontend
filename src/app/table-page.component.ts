@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { QueryService } from './query.service';
 import { QueryResponse, QueryResponseRow } from './models';
 import { SetupService } from './setup.service';
-import { camelize } from './camelize';
+import { camelize } from './utils/camelize';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';

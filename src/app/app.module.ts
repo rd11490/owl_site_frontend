@@ -27,6 +27,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTabsModule } from '@angular/material/tabs';
+import { PlotComponent } from './plot.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     ChartPageComponent,
     HomeComponent,
     NavigationComponent,
+    PlotComponent,
     SelectAggregationTypeComponent,
     SelectCompositionComponent,
     SelectHeroComponent,

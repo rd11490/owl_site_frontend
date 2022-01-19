@@ -8,6 +8,23 @@ export class Player {
   player: string = '';
 }
 
+export interface PlotData {
+  data: DataPointForPlot[];
+  xLabel: string;
+  yLabel: string;
+}
+
+export interface DataPointForPlot {
+  color: string;
+  label: string;
+  size: number;
+  sizeLabel: string;
+  x: number;
+  xLabel: string;
+  y: number;
+  yLabel: string;
+}
+
 export class SetupResponse {
   comps: Composition[] = [];
   heroes: string[] = [];

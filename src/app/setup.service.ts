@@ -9,6 +9,7 @@ import { intialSetup, SetupResponse } from './models';
 })
 export class SetupService {
   public constants: Promise<SetupResponse> = Promise.resolve(intialSetup);
+  public constantsSync: SetupResponse = intialSetup;
 
   constructor(private http: HttpClient) {
     this.constants = this.getSetup();
@@ -19,7 +20,10 @@ export class SetupService {
       this.http
         .get<SetupResponse>('https://mb1m37u0ig.execute-api.us-east-1.amazonaws.com/dev/setup')
         .pipe(catchError(this.handleError))
-    );
+    ).then((setup) => {
+      this.constantsSync = setup;
+      return setup;
+    });
   }
 
   private handleError(res: HttpErrorResponse) {

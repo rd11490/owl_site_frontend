@@ -16,3 +16,68 @@
 <div *ngIf='queryResponse.data.length == 0 && loaded'>
   <h2 align='center'>Query returned no data, please try a different query</h2>
 </div>
+<!--[hidden]='!(queryResponse.data.length > 0 && loaded)'-->
+<div>
+  <div class="option-line">
+    <div class="option-three"></div>
+    <div class="option-three">
+      <div class="option-line">
+        <div class="option-two">
+          Select X Axis Stat
+          <ng-select [items]="(this.stats | async)"
+                     [multiple]="false"
+                     placeholder="Stats"
+                     [virtualScroll]="true"
+                     (change)="selectX($event)">
+          </ng-select>
+        </div>
+        <div class="option-two">
+          Select Y Axis Stat
+          <ng-select [items]="(this.stats | async)"
+                     [multiple]="false"
+                     placeholder="Stats"
+                     [virtualScroll]="true"
+                     (change)="selectY($event)">
+          </ng-select>
+        </div>
+      </div>
+      <div class="option-line">
+        <div class="option-two">
+          Select X Axis Denominator Stat (optional)
+          <ng-select [items]="(this.stats | async)"
+                     [multiple]="false"
+                     placeholder="Stats"
+                     [virtualScroll]="true"
+                     (change)="selectXDenom($event)">
+          </ng-select>
+        </div>
+        <div class="option-two">
+          Select Y Axis Denominator Stat (optional)
+          <ng-select [items]="(this.stats | async)"
+                     [multiple]="false"
+                     placeholder="Stats"
+                     [virtualScroll]="true"
+                     (change)="selectYDenom($event)">
+          </ng-select>
+        </div>
+      </div>
+      <div class="option-line">
+        <div class="option-two">
+          Select Size Stat (optional)
+          <ng-select [items]="(this.stats | async)"
+                     [multiple]="false"
+                     placeholder="Stats"
+                     [virtualScroll]="true"
+                     (change)="selectSize($event)">
+          </ng-select>
+        </div>
+        <div class="option-two"></div>
+      </div>
+      <button class="search-button" (click)="buildChart()">Build Plot</button>
+    </div>
+    <div class="option-three"></div>
+  </div>
+  <div align='center'>
+    <plot [data]='this.data'></plot>
+  </div>
+</div>
