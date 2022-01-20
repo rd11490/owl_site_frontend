@@ -7,11 +7,11 @@ import { Composition, Player, QueryResponse } from './models';
 @Injectable()
 export class QueryService {
   aggregationType?: string;
-  composition?: Composition;
+  composition: Composition[] = [];
   heroes: string[] = [];
   mapNames: string[] = [];
   mapTypes: string[] = [];
-  opponentComposition?: Composition;
+  opponentComposition: Composition[] = [];
   opponentTeams: string[] = [];
   players: Player[] = [];
   stages: string[] = [];
@@ -23,11 +23,11 @@ export class QueryService {
     this.aggregationType = aggregationType;
   }
 
-  setCompsition(composition?: Composition) {
+  setCompsition(composition: Composition[]) {
     this.composition = composition;
   }
 
-  setOpponentCompsition(composition?: Composition) {
+  setOpponentCompsition(composition: Composition[]) {
     this.opponentComposition = composition;
   }
 
@@ -59,14 +59,14 @@ export class QueryService {
     this.stages = stages;
   }
 
-  buildSearyRequest() {
+  buildSearchRequest() {
     return {
       aggregation: this.aggregationType || 'Player',
-      composition: this.composition?.cluster,
+      composition: this.composition?.map((c) => c.cluster),
       heroes: this.heroes,
       mapNames: this.mapNames,
       mapTypes: this.mapTypes,
-      opponentComposition: this.opponentComposition?.cluster,
+      opponentComposition: this.opponentComposition?.map((c) => c.cluster),
       opponentTeams: this.opponentTeams,
       players: this.players.map((player) => player.player),
       stages: this.stages,
@@ -96,12 +96,12 @@ export class QueryService {
       strs.push(`Opponent Teams: ${this.opponentTeams}`);
     }
 
-    if (this.composition) {
-      strs.push(`Composition: ${this.composition.label}`);
+    if (this.composition.length > 0) {
+      strs.push(`Composition: ${this.composition.map((p) => p.label)}`);
     }
 
-    if (this.opponentComposition) {
-      strs.push(`Opponent Composition: ${this.opponentComposition.label}`);
+    if (this.opponentComposition.length > 0) {
+      strs.push(`Opponent Composition: ${this.opponentComposition.map((p) => p.label)}`);
     }
 
     if (this.mapNames.length > 0) {
@@ -128,7 +128,7 @@ export class QueryService {
       this.http
         .post<QueryResponse>(
           'https://mb1m37u0ig.execute-api.us-east-1.amazonaws.com/dev/query',
-          this.buildSearyRequest()
+          this.buildSearchRequest()
         )
         .pipe(catchError(this.handleError))
     );

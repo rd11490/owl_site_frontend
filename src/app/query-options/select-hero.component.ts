@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { SetupService } from '../setup.service';
-import { map, Observable } from 'rxjs';
 import { QueryService } from '../query.service';
-import { Player } from '../models';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'select-hero',
@@ -11,11 +10,29 @@ import { Player } from '../models';
 })
 export class SelectHeroComponent {
   heroes: Promise<string[]>;
-  constructor(private setupService: SetupService, private queryService: QueryService) {
+  // eslint-disable no-unused-vars
+  constructor(
+    private setupService: SetupService,
+    // eslint-disable-next-line no-unused-vars
+    private queryService: QueryService,
+    // eslint-disable-next-line no-unused-vars
+    private route: ActivatedRoute,
+    // eslint-disable-next-line no-unused-vars
+    private router: Router
+  ) {
     this.heroes = setupService.constants.then((setup) => setup.heroes.sort());
   }
 
   selectHeroes(heroes: Array<string>) {
     this.queryService.setHeroes(heroes);
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        heroes: heroes,
+      },
+      queryParamsHandling: 'merge',
+      skipLocationChange: false,
+    });
   }
 }

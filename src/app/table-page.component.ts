@@ -6,6 +6,7 @@ import { camelize } from './utils/camelize';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'table-page',
@@ -19,12 +20,12 @@ export class TablePageComponent implements OnInit {
   queryResponse: QueryResponse = new QueryResponse();
   dataSource: MatTableDataSource<QueryResponseRow> = new MatTableDataSource<QueryResponseRow>(this.queryResponse.data);
   columnsToDisplay: string[] = ['player'];
-  stats: Promise<string[]>;
   loading: boolean = false;
   loaded: boolean = false;
 
-  constructor(private queryService: QueryService, private setupService: SetupService) {
-    this.stats = setupService.constants.then((setup) => setup.stats.sort());
+  // eslint-disable-next-line no-unused-vars
+  constructor(private queryService: QueryService, private setupService: SetupService, private route: ActivatedRoute) {
+    const queryParams = this.route.snapshot.queryParams != null ? this.route.snapshot.queryParams : undefined;
   }
 
   ngOnInit() {

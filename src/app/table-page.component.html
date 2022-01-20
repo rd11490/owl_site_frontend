@@ -19,7 +19,7 @@
 <div [hidden]='!(queryResponse.data.length > 0 && loaded)'>
   <div>
     Select Stats to show
-    <ng-select [items]="(this.stats | async)"
+    <ng-select [items]="this.queryResponse.stats"
                [multiple]="true"
                placeholder="Stats"
                [virtualScroll]="true"

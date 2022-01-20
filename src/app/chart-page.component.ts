@@ -4,6 +4,7 @@ import { DataPointForPlot, PlotData, QueryResponse, QueryResponseRow } from './m
 import { SetupService } from './setup.service';
 import { getPlayerColor, getTeamColor } from './utils/teamColors';
 import { camelize } from './utils/camelize';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'chart-page',
@@ -25,7 +26,31 @@ export class ChartPageComponent {
   dataString?: string;
 
   // eslint-disable-next-line no-unused-vars
-  constructor(private queryService: QueryService, private setupService: SetupService) {}
+  constructor(private queryService: QueryService, private setupService: SetupService, private route: ActivatedRoute) {
+    const queryParams = this.route.snapshot.queryParams != null ? this.route.snapshot.queryParams : undefined;
+    console.log(queryParams);
+    if (queryParams) {
+      if (queryParams['aggregation']) {
+        this.queryService.setAggregationType(queryParams['aggregation']);
+      }
+
+      if (queryParams['composition']) {
+        this.queryService.setCompsition(
+          queryParams['composition'].split(',').map((c: string) => ({
+            cluster: c,
+          }))
+        );
+      }
+
+      if (queryParams['opponentComposition']) {
+        this.queryService.setOpponentCompsition(
+          queryParams['opponentComposition'].split(',').map((c: string) => ({
+            cluster: c,
+          }))
+        );
+      }
+    }
+  }
 
   buildTestData(): PlotData {
     return {

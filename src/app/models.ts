@@ -25,6 +25,19 @@ export interface DataPointForPlot {
   yLabel: string;
 }
 
+export interface SearchRequest {
+  aggregation: 'PLAYER' | 'HERO' | 'TEAM';
+  composition?: number;
+  heroes?: string[];
+  mapNames?: string[];
+  mapTypes?: string[];
+  opponentComposition?: number;
+  opponentTeams?: string[];
+  players?: string[];
+  stages?: string[];
+  teams?: string[];
+}
+
 export class SetupResponse {
   comps: Composition[] = [];
   heroes: string[] = [];

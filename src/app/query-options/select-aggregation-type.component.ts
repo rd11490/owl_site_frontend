@@ -1,14 +1,26 @@
-import { Component } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { QueryService } from '../query.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgSelectComponent } from '@ng-select/ng-select';
+import { SetupService } from '../setup.service';
 
 @Component({
   selector: 'select-aggregation-type',
   templateUrl: './select-aggregation-type.component.html',
   styleUrls: ['../app.component.css'],
 })
-export class SelectAggregationTypeComponent {
+export class SelectAggregationTypeComponent implements OnInit {
   aggregationType: { label: string; value: string }[];
-  constructor(private queryService: QueryService) {
+  constructor(
+    // eslint-disable-next-line no-unused-vars
+    private setupService: SetupService,
+    // eslint-disable-next-line no-unused-vars
+    private queryService: QueryService,
+    // eslint-disable-next-line no-unused-vars
+    private route: ActivatedRoute,
+    // eslint-disable-next-line no-unused-vars
+    private router: Router
+  ) {
     this.aggregationType = [
       { value: 'PLAYER', label: 'By Player' },
       { value: 'TEAM', label: 'By Team' },
@@ -16,7 +28,32 @@ export class SelectAggregationTypeComponent {
     ];
   }
 
-  selectAggregationType(aggregationType: { label: string; value: string } = { value: 'PLAYER', label: 'By Player' }) {
-    this.queryService.setAggregationType(aggregationType.value);
+  @ViewChild(NgSelectComponent, { static: false }) ngSelect!: NgSelectComponent;
+
+  ngOnInit() {
+    if (this.queryService.aggregationType) {
+      this.setupService.getSetup().then((s) => {
+        const selection = this.aggregationType.filter((v) => v.value === this.queryService.aggregationType)[0];
+        this.ngSelect.select({
+          label: selection.label,
+          value: selection,
+        });
+      });
+    }
+  }
+
+  selectAggregationType(aggregationType?: { label: string; value: string }) {
+    if (aggregationType) {
+      this.queryService.setAggregationType(aggregationType.value);
+
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: {
+          aggregation: aggregationType.value,
+        },
+        queryParamsHandling: 'merge',
+        skipLocationChange: false,
+      });
+    }
   }
 }
