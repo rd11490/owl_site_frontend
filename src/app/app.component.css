@@ -147,7 +147,7 @@ h1 {
 }
 
 .option-line {
-    padding: 1% 0 1% 0;
+    padding: 0% 0 0% 0;
 }
 
 .search-button {
@@ -181,4 +181,26 @@ mat-header-cell:nth-child(1) {
 th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
     border: hidden;
     width: 10%;
+}
+
+div.tooltip {
+    background: white;
+    border-color: black;
+    border-radius: 8px;
+    border-style: solid;
+    border-width: 2px;
+    font: 16px sans-serif;
+    height: max-content;
+    padding: 2px;
+    pointer-events: none;
+    position: absolute;
+    text-align: center;
+    width: max-content;
+}
+
+div.search-text {
+    align-content: center;
+    text-align: center;
+    width: max-content;
+    margin: auto;
 }

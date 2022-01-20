@@ -38,6 +38,7 @@ export class SetupResponse {
 
 export class QueryResponse {
   data: QueryResponseRow[] = [];
+  stats: string[] = [];
 }
 
 export class QueryResponseRow {

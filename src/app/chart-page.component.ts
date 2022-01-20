@@ -12,7 +12,6 @@ import { camelize } from './utils/camelize';
 })
 export class ChartPageComponent {
   queryResponse: QueryResponse = new QueryResponse();
-  stats: Promise<string[]>;
   loading: boolean = false;
   loaded: boolean = false;
 
@@ -25,14 +24,13 @@ export class ChartPageComponent {
 
   dataString?: string;
 
-  constructor(private queryService: QueryService, private setupService: SetupService) {
-    this.stats = setupService.constants.then((setup) => setup.stats.sort().concat(['Per 10']));
-  }
+  // eslint-disable-next-line no-unused-vars
+  constructor(private queryService: QueryService, private setupService: SetupService) {}
 
   buildTestData(): PlotData {
     return {
-      xLabel: 'TESTX',
-      yLabel: 'TESTY',
+      xLabel: 'TESTX PLUS A BUNCH OF OTHER NONSENSE',
+      yLabel: 'TESTY PLUS A BUNCH OF OTHER NONSENSE',
       data: [
         {
           color: '#000000',
@@ -89,6 +87,10 @@ export class ChartPageComponent {
     });
   }
 
+  selectionText() {
+    return this.queryService.selectionText();
+  }
+
   selectX(x?: string) {
     this.x = x;
   }
@@ -122,73 +124,75 @@ export class ChartPageComponent {
     return row.hero || row.player || row.teamName || '';
   }
 
+  buildNewSearch() {
+    this.loaded = false;
+  }
+
   buildChart() {
-    // console.log('Build Chart');
-    // console.log(this.data);
-    // if (this.x != null && this.y != null && this.queryResponse.data.length > 0) {
-    //   let xLabel: string;
-    //   let yLabel: string;
-    //
-    //   if (this.xDenom) {
-    //     if (this.xDenom != 'Per 10') {
-    //       xLabel = `${this.x} Per ${this.xDenom}`;
-    //     } else {
-    //       xLabel = `${this.x} Per 10`;
-    //     }
-    //   } else {
-    //     xLabel = this.x || 'No Y Stat Selected';
-    //   }
-    //
-    //   if (this.yDenom) {
-    //     if (this.yDenom != 'Per 10') {
-    //       yLabel = `${this.y} Per ${this.yDenom}`;
-    //     } else {
-    //       yLabel = `${this.y} Per 10`;
-    //     }
-    //   } else {
-    //     yLabel = this.y || 'No Y Stat Selected';
-    //   }
-    //
-    //   // @ts-ignore
-    //   const plotDataRows: DataPointForPlot[] = this.queryResponse.data
-    //     .map((row) => {
-    //       const per10 = row.timePlayed ? row.timePlayed / 600.0 : 0;
-    //
-    //       // @ts-ignore
-    //       const obj: { [key: string]: number } = {
-    //         ...row,
-    //         per10,
-    //       };
-    //
-    //       const xNum = obj[camelize(this.x || '')];
-    //       const yNum = obj[camelize(this.y || '')];
-    //       const xDenom = obj[camelize(this.xDenom || '')] || 1;
-    //       const yDenom = obj[camelize(this.yDenom || '')] || 1;
-    //       const size = obj[camelize(this.size || '')] || 5;
-    //
-    //       if (!xNum || !yNum) {
-    //         return undefined;
-    //       }
-    //
-    //       return {
-    //         color: this.getColor(row),
-    //         label: this.getLabel(row),
-    //         size,
-    //         sizeLabel: this.size,
-    //         x: xNum / xDenom,
-    //         xLabel,
-    //         y: yNum / yDenom,
-    //         yLabel,
-    //       } as DataPointForPlot;
-    //     })
-    //     .filter((v) => v != null);
-    //
-    //   this.data = {
-    //     data: plotDataRows,
-    //     xLabel,
-    //     yLabel,
-    //   };
-    // }
-    this.data = this.buildTestData();
+    if (this.x != null && this.y != null && this.queryResponse.data.length > 0) {
+      let xLabel: string;
+      let yLabel: string;
+
+      if (this.xDenom) {
+        if (this.xDenom != 'Per 10') {
+          xLabel = `${this.x} Per ${this.xDenom}`;
+        } else {
+          xLabel = `${this.x} Per 10`;
+        }
+      } else {
+        xLabel = this.x || 'No Y Stat Selected';
+      }
+
+      if (this.yDenom) {
+        if (this.yDenom != 'Per 10') {
+          yLabel = `${this.y} Per ${this.yDenom}`;
+        } else {
+          yLabel = `${this.y} Per 10`;
+        }
+      } else {
+        yLabel = this.y || 'No Y Stat Selected';
+      }
+
+      // @ts-ignore
+      const plotDataRows: DataPointForPlot[] = this.queryResponse.data
+        .map((row) => {
+          const per10 = row.timePlayed ? row.timePlayed / 600.0 : 0;
+
+          // @ts-ignore
+          const obj: { [key: string]: number } = {
+            ...row,
+            per10,
+          };
+
+          const xNum = obj[camelize(this.x || '')];
+          const yNum = obj[camelize(this.y || '')];
+          const xDenom = obj[camelize(this.xDenom || '')] || 1;
+          const yDenom = obj[camelize(this.yDenom || '')] || 1;
+          const size = obj[camelize(this.size || '')] || 5;
+
+          if (!xNum || !yNum || !size) {
+            return undefined;
+          }
+
+          return {
+            color: this.getColor(row),
+            label: this.getLabel(row),
+            size,
+            sizeLabel: this.size,
+            x: xNum / xDenom,
+            xLabel,
+            y: yNum / yDenom,
+            yLabel,
+          } as DataPointForPlot;
+        })
+        .filter((v) => v != null);
+
+      this.data = {
+        data: plotDataRows,
+        xLabel,
+        yLabel,
+      };
+    }
+    // this.data = this.buildTestData();
   }
 }

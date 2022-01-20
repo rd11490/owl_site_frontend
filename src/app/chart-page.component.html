@@ -1,4 +1,4 @@
-<div>
+<div [hidden]='loaded'>
   <selector></selector>
   <button class="search-button" (click)="search()">Search</button>
 </div>
@@ -6,7 +6,7 @@
 <br>
 
 <div *ngIf='queryResponse.data.length == 0 && !loading && !loaded'>
-  <h2 align='center'>Query for stats then build the table you want to see</h2>
+  <h2 align='center'>Query for stats then build the scatter plot you want to see</h2>
 </div>
 
 <div *ngIf='loading'>
@@ -16,44 +16,57 @@
 <div *ngIf='queryResponse.data.length == 0 && loaded'>
   <h2 align='center'>Query returned no data, please try a different query</h2>
 </div>
-<!--[hidden]='!(queryResponse.data.length > 0 && loaded)'-->
-<div>
-  <div class="option-line">
-    <div class="option-three"></div>
-    <div class="option-three">
+<div [hidden]='!(queryResponse.data.length > 0 && loaded)'>
+  <div class='search-text'>
+    Using data from the search included the terms:
+    <br>
+    {{this.selectionText()}}
+  </div>
+  <br>
+  <br>
+  <div>
       <div class="option-line">
-        <div class="option-two">
+        <div class="option-three">
           Select X Axis Stat
-          <ng-select [items]="(this.stats | async)"
+          <ng-select [items]="this.queryResponse.stats"
                      [multiple]="false"
                      placeholder="Stats"
                      [virtualScroll]="true"
                      (change)="selectX($event)">
           </ng-select>
         </div>
-        <div class="option-two">
+        <div class="option-three">
           Select Y Axis Stat
-          <ng-select [items]="(this.stats | async)"
+          <ng-select [items]="this.queryResponse.stats"
                      [multiple]="false"
                      placeholder="Stats"
                      [virtualScroll]="true"
                      (change)="selectY($event)">
           </ng-select>
         </div>
+        <div class="option-three">
+          Select Size Stat (optional)
+          <ng-select [items]="this.queryResponse.stats"
+                     [multiple]="false"
+                     placeholder="Stats"
+                     [virtualScroll]="true"
+                     (change)="selectSize($event)">
+          </ng-select>
+        </div>
       </div>
       <div class="option-line">
-        <div class="option-two">
+        <div class="option-three">
           Select X Axis Denominator Stat (optional)
-          <ng-select [items]="(this.stats | async)"
+          <ng-select [items]="this.queryResponse.stats"
                      [multiple]="false"
                      placeholder="Stats"
                      [virtualScroll]="true"
                      (change)="selectXDenom($event)">
           </ng-select>
         </div>
-        <div class="option-two">
+        <div class="option-three">
           Select Y Axis Denominator Stat (optional)
-          <ng-select [items]="(this.stats | async)"
+          <ng-select [items]="this.queryResponse.stats"
                      [multiple]="false"
                      placeholder="Stats"
                      [virtualScroll]="true"
@@ -61,22 +74,11 @@
           </ng-select>
         </div>
       </div>
-      <div class="option-line">
-        <div class="option-two">
-          Select Size Stat (optional)
-          <ng-select [items]="(this.stats | async)"
-                     [multiple]="false"
-                     placeholder="Stats"
-                     [virtualScroll]="true"
-                     (change)="selectSize($event)">
-          </ng-select>
-        </div>
-        <div class="option-two"></div>
-      </div>
       <button class="search-button" (click)="buildChart()">Build Plot</button>
-    </div>
-    <div class="option-three"></div>
+      <button class="search-button" (click)="buildNewSearch()">Build new Search</button>
   </div>
+  <br>
+  <br>
   <div align='center'>
     <plot [data]='this.data'></plot>
   </div>
