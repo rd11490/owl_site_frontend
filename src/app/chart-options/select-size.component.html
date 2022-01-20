@@ -1,0 +1,9 @@
+<div>
+    Select Size Stat (optional)
+    <ng-select [items]="this.stats | async"
+               [multiple]="false"
+               placeholder="Stats"
+               [virtualScroll]="true"
+               (change)="selectSize($event)">
+    </ng-select>
+</div>

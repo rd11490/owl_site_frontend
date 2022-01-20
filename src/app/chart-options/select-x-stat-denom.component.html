@@ -1,0 +1,9 @@
+<div>
+    Select X Axis Denominator Stat (optional)
+    <ng-select [items]="this.stats | async"
+               [multiple]="false"
+               placeholder="Stats"
+               [virtualScroll]="true"
+               (change)="selectXDenom($event)">
+    </ng-select>
+</div>

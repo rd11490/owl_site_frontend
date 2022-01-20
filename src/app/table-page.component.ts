@@ -26,6 +26,60 @@ export class TablePageComponent implements OnInit {
   // eslint-disable-next-line no-unused-vars
   constructor(private queryService: QueryService, private setupService: SetupService, private route: ActivatedRoute) {
     const queryParams = this.route.snapshot.queryParams != null ? this.route.snapshot.queryParams : undefined;
+    if (queryParams) {
+      if (queryParams['aggregation']) {
+        this.queryService.setAggregationType(queryParams['aggregation']);
+      }
+
+      if (queryParams['composition']) {
+        this.queryService.setCompsition(
+          queryParams['composition'].split(',').map((c: string) => ({
+            cluster: c,
+          }))
+        );
+      }
+
+      if (queryParams['opponentComposition']) {
+        this.queryService.setOpponentCompsition(
+          queryParams['opponentComposition'].split(',').map((c: string) => ({
+            cluster: c,
+          }))
+        );
+      }
+
+      if (queryParams['heroes']) {
+        this.queryService.setHeroes(queryParams['heroes'].split(','));
+      }
+
+      if (queryParams['mapNames']) {
+        this.queryService.setMapNames(queryParams['mapNames'].split(','));
+      }
+
+      if (queryParams['mapTypes']) {
+        this.queryService.setMapTypes(queryParams['mapTypes'].split(','));
+      }
+
+      if (queryParams['teams']) {
+        this.queryService.setTeams(queryParams['teams'].split(','));
+      }
+
+      if (queryParams['opponentTeams']) {
+        this.queryService.setOpponentTeams(queryParams['opponentTeams'].split(','));
+      }
+
+      if (queryParams['stages']) {
+        this.queryService.setStages(queryParams['stages'].split(','));
+      }
+
+      if (queryParams['players']) {
+        this.queryService.setPlayers(
+          queryParams['players'].split(',').map((p: string) => ({
+            player: p,
+          }))
+        );
+      }
+    }
+    this.search();
   }
 
   ngOnInit() {

@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { firstValueFrom, Observable, throwError as observableThrowError } from 'rxjs';
+import { firstValueFrom, throwError as observableThrowError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Composition, Player, QueryResponse } from './models';
 
@@ -17,6 +17,10 @@ export class QueryService {
   stages: string[] = [];
   teams: string[] = [];
 
+  queryResponseSync: QueryResponse = new QueryResponse();
+  queryResponse: Promise<QueryResponse> = Promise.resolve(new QueryResponse());
+
+  // eslint-disable-next-line no-unused-vars
   constructor(private http: HttpClient) {}
 
   setAggregationType(aggregationType: string) {
@@ -124,14 +128,19 @@ export class QueryService {
   }
 
   runQuery(): Promise<QueryResponse> {
-    return firstValueFrom(
+    this.queryResponse = firstValueFrom(
       this.http
         .post<QueryResponse>(
           'https://mb1m37u0ig.execute-api.us-east-1.amazonaws.com/dev/query',
           this.buildSearchRequest()
         )
         .pipe(catchError(this.handleError))
-    );
+    ).then((response) => {
+      this.queryResponseSync = response;
+      return response;
+    });
+
+    return this.queryResponse;
   }
 
   private handleError(res: HttpErrorResponse) {

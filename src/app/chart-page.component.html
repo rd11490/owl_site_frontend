@@ -1,4 +1,4 @@
-<div [hidden]='loaded'>
+<div [hidden]='!showSelector'>
   <selector></selector>
   <button class="search-button" (click)="search()">Search</button>
 </div>
@@ -17,6 +17,7 @@
   <h2 align='center'>Query returned no data, please try a different query</h2>
 </div>
 <div [hidden]='!(queryResponse.data.length > 0 && loaded)'>
+  <button class="search-button" (click)="buildNewSearch()">Build new Search</button>
   <div class='search-text'>
     Using data from the search included the terms:
     <br>
@@ -27,55 +28,24 @@
   <div>
       <div class="option-line">
         <div class="option-three">
-          Select X Axis Stat
-          <ng-select [items]="this.queryResponse.stats"
-                     [multiple]="false"
-                     placeholder="Stats"
-                     [virtualScroll]="true"
-                     (change)="selectX($event)">
-          </ng-select>
+          <select-x-stat></select-x-stat>
         </div>
         <div class="option-three">
-          Select Y Axis Stat
-          <ng-select [items]="this.queryResponse.stats"
-                     [multiple]="false"
-                     placeholder="Stats"
-                     [virtualScroll]="true"
-                     (change)="selectY($event)">
-          </ng-select>
+          <select-y-stat></select-y-stat>
         </div>
         <div class="option-three">
-          Select Size Stat (optional)
-          <ng-select [items]="this.queryResponse.stats"
-                     [multiple]="false"
-                     placeholder="Stats"
-                     [virtualScroll]="true"
-                     (change)="selectSize($event)">
-          </ng-select>
+          <select-size></select-size>
         </div>
       </div>
       <div class="option-line">
         <div class="option-three">
-          Select X Axis Denominator Stat (optional)
-          <ng-select [items]="this.queryResponse.stats"
-                     [multiple]="false"
-                     placeholder="Stats"
-                     [virtualScroll]="true"
-                     (change)="selectXDenom($event)">
-          </ng-select>
+          <select-x-stat-denom></select-x-stat-denom>
         </div>
         <div class="option-three">
-          Select Y Axis Denominator Stat (optional)
-          <ng-select [items]="this.queryResponse.stats"
-                     [multiple]="false"
-                     placeholder="Stats"
-                     [virtualScroll]="true"
-                     (change)="selectYDenom($event)">
-          </ng-select>
+          <select-y-stat-denom></select-y-stat-denom>
         </div>
       </div>
       <button class="search-button" (click)="buildChart()">Build Plot</button>
-      <button class="search-button" (click)="buildNewSearch()">Build new Search</button>
   </div>
   <br>
   <br>

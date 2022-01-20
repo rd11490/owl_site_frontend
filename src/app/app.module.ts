@@ -28,6 +28,12 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTabsModule } from '@angular/material/tabs';
 import { PlotComponent } from './plot.component';
+import { ChartService } from './chart.service';
+import { SelectXStatComponent } from './chart-options/select-x-stat.component';
+import { SelectYStatComponent } from './chart-options/select-y-stat.component';
+import { SelectXStatDenomComponent } from './chart-options/select-x-stat-denom.component';
+import { SelectYStatDenomComponent } from './chart-options/select-y-stat-denom.component';
+import { SelectSizeComponent } from './chart-options/select-size.component';
 
 @NgModule({
   declarations: [
@@ -45,8 +51,13 @@ import { PlotComponent } from './plot.component';
     SelectOpponentTeamComponent,
     SelectorComponent,
     SelectPlayerComponent,
+    SelectSizeComponent,
     SelectStageComponent,
     SelectTeamComponent,
+    SelectXStatComponent,
+    SelectXStatDenomComponent,
+    SelectYStatComponent,
+    SelectYStatDenomComponent,
     TablePageComponent,
   ],
   imports: [
@@ -61,7 +72,7 @@ import { PlotComponent } from './plot.component';
     MatTabsModule,
     NgSelectModule,
   ],
-  providers: [SetupService, QueryService],
+  providers: [SetupService, QueryService, ChartService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

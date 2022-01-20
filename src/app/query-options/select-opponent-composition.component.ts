@@ -31,7 +31,7 @@ export class SelectOpponentCompositionComponent implements OnInit {
   ngOnInit() {
     if (this.queryService.opponentComposition) {
       // eslint-disable-next-line no-unused-vars
-      this.setupService.getSetup().then((s) => {
+      this.setupService.constants.then((s) => {
         this.queryService.opponentComposition.forEach((comp) => {
           if (this.ngSelect.selectedItems.filter((v) => v.value == comp.cluster).length < 1) {
             const compToSelect = s.comps.find((cs) => cs.cluster == comp.cluster);
@@ -50,10 +50,11 @@ export class SelectOpponentCompositionComponent implements OnInit {
 
   selectComposition(composition: Composition[]) {
     this.queryService.setOpponentCompsition(composition);
+
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
-        opponentComposition: composition.map((c) => c.cluster).join(','),
+        opponentComposition: composition.length === 0 ? undefined : composition.map((c) => c.cluster).join(','),
       },
       queryParamsHandling: 'merge',
       skipLocationChange: false,

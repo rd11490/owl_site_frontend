@@ -32,7 +32,7 @@ export class SelectAggregationTypeComponent implements OnInit {
 
   ngOnInit() {
     if (this.queryService.aggregationType) {
-      this.setupService.getSetup().then((s) => {
+      this.setupService.constants.then((s) => {
         const selection = this.aggregationType.filter((v) => v.value === this.queryService.aggregationType)[0];
         this.ngSelect.select({
           label: selection.label,

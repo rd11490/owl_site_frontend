@@ -1,0 +1,9 @@
+<div>
+    Select Y Axis Stat
+    <ng-select [items]="this.stats | async"
+               [multiple]="false"
+               placeholder="Stats"
+               [virtualScroll]="true"
+               (change)="selectY($event)">
+    </ng-select>
+</div>
