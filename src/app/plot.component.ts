@@ -52,7 +52,7 @@ export class PlotComponent implements OnInit {
       .attr('y', 0);
   };
 
-  private clearPlot() {
+  public clearPlot() {
     d3Select.select('svg').selectChildren().remove();
   }
 
@@ -94,6 +94,7 @@ export class PlotComponent implements OnInit {
           .attr('fill', 'black')
           .attr('text-anchor', 'middle')
           .text(this.dataToPlot.xLabel)
+          .style('font-size', '16px')
       );
 
     const minYPlot = minY - 0.1 * Math.abs(yRange);
@@ -123,6 +124,7 @@ export class PlotComponent implements OnInit {
           .attr('fill', 'black')
           .attr('text-anchor', 'middle')
           .text(this.dataToPlot.yLabel)
+          .style('font-size', '16px')
           .attr('transform', 'rotate(-90)')
       );
 
@@ -202,15 +204,16 @@ export class PlotComponent implements OnInit {
       .attr('id', 'POINT')
       .on('mouseover', (event: any, row: DataPointForPlot) => {
         this.tooltip.transition().duration(200).style('opacity', 1);
+        const labelAdd = row.labelAdditional ? ` - ${row.labelAdditional}` : '';
         const toolTip = row.sizeLabel
           ? `
-         ${row.label}<br/>
+         ${row.label}${labelAdd}<br/>
          ${row.xLabel}: ${row.x.toLocaleString('en-US', { minimumFractionDigits: 2 })}<br/>
          ${row.yLabel}: ${row.y.toLocaleString('en-US', { minimumFractionDigits: 2 })}<br/>
          ${row.sizeLabel}: ${row.size.toLocaleString('en-US', { minimumFractionDigits: 2 })}
           `
           : `
-         ${row.label}<br/>
+         ${row.label}${labelAdd}<br/>
          ${row.xLabel}: ${row.x.toLocaleString('en-US', { minimumFractionDigits: 2 })}<br/>
          ${row.yLabel}: ${row.y.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
 

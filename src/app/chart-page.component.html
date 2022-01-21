@@ -17,7 +17,7 @@
   <h2 align='center'>Query returned no data, please try a different query</h2>
 </div>
 <div [hidden]='!(queryResponse.data.length > 0 && loaded)'>
-  <button class="search-button" (click)="buildNewSearch()">Build new Search</button>
+  <button class="search-button" (click)="buildNewSearch()">New Search</button>
   <div class='search-text'>
     Using data from the search included the terms:
     <br>
@@ -28,21 +28,21 @@
   <div>
       <div class="option-line">
         <div class="option-three">
-          <select-x-stat></select-x-stat>
+          <select-x-stat [statList]='stats'></select-x-stat>
         </div>
         <div class="option-three">
-          <select-y-stat></select-y-stat>
+          <select-y-stat [statList]='stats'></select-y-stat>
         </div>
         <div class="option-three">
-          <select-size></select-size>
+          <select-size [statList]='stats'></select-size>
         </div>
       </div>
       <div class="option-line">
         <div class="option-three">
-          <select-x-stat-denom></select-x-stat-denom>
+          <select-x-stat-denom [statList]='stats'></select-x-stat-denom>
         </div>
         <div class="option-three">
-          <select-y-stat-denom></select-y-stat-denom>
+          <select-y-stat-denom [statList]='stats'></select-y-stat-denom>
         </div>
       </div>
       <button class="search-button" (click)="buildChart()">Build Plot</button>

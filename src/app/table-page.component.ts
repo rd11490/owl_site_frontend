@@ -7,6 +7,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
   selector: 'table-page',
@@ -16,15 +17,25 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class TablePageComponent implements OnInit {
   @ViewChild(MatSort, { static: false }) sort!: MatSort;
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
+  @ViewChild(NgSelectComponent, { static: false }) ngSelect!: NgSelectComponent;
 
   queryResponse: QueryResponse = new QueryResponse();
   dataSource: MatTableDataSource<QueryResponseRow> = new MatTableDataSource<QueryResponseRow>(this.queryResponse.data);
   columnsToDisplay: string[] = ['player'];
   loading: boolean = false;
   loaded: boolean = false;
+  queryParamStats: string[] = [];
 
-  // eslint-disable-next-line no-unused-vars
-  constructor(private queryService: QueryService, private setupService: SetupService, private route: ActivatedRoute) {
+  constructor(
+    // eslint-disable-next-line no-unused-vars
+    private queryService: QueryService,
+    // eslint-disable-next-line no-unused-vars
+    private setupService: SetupService,
+    // eslint-disable-next-line no-unused-vars
+    private route: ActivatedRoute,
+    // eslint-disable-next-line no-unused-vars
+    private router: Router
+  ) {
     const queryParams = this.route.snapshot.queryParams != null ? this.route.snapshot.queryParams : undefined;
     if (queryParams) {
       if (queryParams['aggregation']) {
@@ -78,8 +89,11 @@ export class TablePageComponent implements OnInit {
           }))
         );
       }
+      if (queryParams['stats']) {
+        this.queryParamStats = queryParams['stats'].split(',');
+      }
+      this.search();
     }
-    this.search();
   }
 
   ngOnInit() {
@@ -88,7 +102,6 @@ export class TablePageComponent implements OnInit {
   }
 
   search() {
-    console.log('PRESSED SEARCH!');
     this.loading = true;
     this.loaded = false;
 
@@ -100,6 +113,16 @@ export class TablePageComponent implements OnInit {
       this.loading = false;
       this.loaded = true;
       this.selectStats([]);
+      if (this.queryParamStats.length > 0) {
+        this.queryParamStats.forEach((stat: string) => {
+          this.ngSelect.select({
+            name: [stat],
+            label: stat,
+            value: stat,
+          });
+        });
+        this.queryParamStats = [];
+      }
     });
   }
 
@@ -108,5 +131,14 @@ export class TablePageComponent implements OnInit {
     this.columnsToDisplay = [this.queryService.aggregationType?.toLowerCase() || 'player', 'timePlayed'].concat(
       camelStats
     );
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        stats: stats.length > 0 ? stats.join(',') : undefined,
+      },
+      queryParamsHandling: 'merge',
+      skipLocationChange: false,
+    });
   }
 }

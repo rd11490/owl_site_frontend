@@ -23,6 +23,7 @@ export interface DataPointForPlot {
   xLabel: string;
   y: number;
   yLabel: string;
+  labelAdditional?: string;
 }
 
 export interface SearchRequest {

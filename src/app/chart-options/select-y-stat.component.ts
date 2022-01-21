@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { QueryService } from '../query.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgSelectComponent } from '@ng-select/ng-select';
@@ -10,7 +10,7 @@ import { ChartService } from '../chart.service';
   styleUrls: ['../app.component.css'],
 })
 export class SelectYStatComponent implements OnInit {
-  stats: Promise<string[]>;
+  stats: string[] = [];
   constructor(
     // eslint-disable-next-line no-unused-vars
     private queryService: QueryService,
@@ -20,9 +20,7 @@ export class SelectYStatComponent implements OnInit {
     private router: Router,
     // eslint-disable-next-line no-unused-vars
     private chartService: ChartService
-  ) {
-    this.stats = queryService.queryResponse.then((resp) => resp.stats.sort());
-  }
+  ) {}
 
   @ViewChild(NgSelectComponent, { static: false }) ngSelect!: NgSelectComponent;
 
@@ -49,5 +47,14 @@ export class SelectYStatComponent implements OnInit {
       queryParamsHandling: 'merge',
       skipLocationChange: false,
     });
+  }
+
+  public clear() {
+    this.ngSelect.handleClearClick();
+  }
+
+  @Input()
+  set statList(stats: string[]) {
+    this.stats = stats;
   }
 }

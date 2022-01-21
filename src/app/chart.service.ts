@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DataPointForPlot, PlotData, QueryResponseRow } from './models';
 import { QueryService } from './query.service';
-import { getPlayerColor, getTeamColor } from './utils/teamColors';
+import { getHeroColor, getPlayerColor, getTeamColor } from './utils/teamColors';
 import { camelize } from './utils/camelize';
 import { SetupService } from './setup.service';
 
@@ -91,12 +91,20 @@ export class ChartService {
       return getPlayerColor(row.player, this.setupService.constantsSync.players);
     } else if (row.teamName) {
       return getTeamColor(row.teamName);
+    } else if (row.hero) {
+      return getHeroColor(row.hero);
     }
     return '#000000';
   }
 
   private getLabel(row: QueryResponseRow): string {
     return row.hero || row.player || row.teamName || '';
+  }
+
+  private getLabelAdditional(row: QueryResponseRow): string | undefined {
+    return row.player
+      ? this.setupService.constantsSync.players.find((player) => row.player === player.player)?.teamName
+      : undefined;
   }
 
   public buildChartData() {
@@ -154,6 +162,7 @@ export class ChartService {
             xLabel,
             y: yNum / yDenom,
             yLabel,
+            labelAdditional: this.getLabelAdditional(row),
           } as DataPointForPlot;
         })
         .filter((v) => v != null);
