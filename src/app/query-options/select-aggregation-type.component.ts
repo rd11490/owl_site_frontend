@@ -25,6 +25,8 @@ export class SelectAggregationTypeComponent implements OnInit {
       { value: 'PLAYER', label: 'By Player' },
       { value: 'TEAM', label: 'By Team' },
       { value: 'HERO', label: 'By Hero' },
+      { value: 'TEAMANDHERO', label: 'By Team and Hero' },
+      { value: 'PLAYERANDHERO', label: 'By Player and Hero' },
     ];
   }
 

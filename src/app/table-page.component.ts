@@ -37,7 +37,7 @@ export class TablePageComponent implements OnInit {
     private router: Router
   ) {
     const queryParams = this.route.snapshot.queryParams != null ? this.route.snapshot.queryParams : undefined;
-    if (queryParams) {
+    if (queryParams && Object.keys(queryParams).length > 0) {
       if (queryParams['aggregation']) {
         this.queryService.setAggregationType(queryParams['aggregation']);
       }
@@ -126,11 +126,21 @@ export class TablePageComponent implements OnInit {
     });
   }
 
+  private baseColumns(): string[] {
+    if (this.queryService.aggregationType === 'TEAMANDHERO') {
+      return ['team', 'hero', 'timePlayed'];
+    } else if (this.queryService.aggregationType === 'PLAYERANDHERO') {
+      return ['player', 'hero', 'timePlayed'];
+    } else {
+      return [this.queryService.aggregationType?.toLowerCase() || 'player', 'timePlayed'];
+    }
+  }
+
   selectStats(stats: string[]) {
     const camelStats = stats.map((s) => camelize(s));
-    this.columnsToDisplay = [this.queryService.aggregationType?.toLowerCase() || 'player', 'timePlayed'].concat(
-      camelStats
-    );
+    this.queryService.aggregationType?.toLowerCase();
+
+    this.columnsToDisplay = this.baseColumns().concat(camelStats);
 
     this.router.navigate([], {
       relativeTo: this.route,

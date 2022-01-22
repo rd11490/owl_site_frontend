@@ -12,6 +12,7 @@ export class ChartService {
   xDenom?: string;
   yDenom?: string;
   size?: string;
+  minTime?: number;
   data?: PlotData = this.buildTestData();
 
   // eslint-disable-next-line no-unused-vars
@@ -35,6 +36,10 @@ export class ChartService {
 
   selectSize(size?: string) {
     this.size = size;
+  }
+
+  selectMinTime(time?: number) {
+    this.minTime = time;
   }
 
   buildTestData(): PlotData {
@@ -87,7 +92,11 @@ export class ChartService {
   }
 
   private getColor(row: QueryResponseRow): string {
-    if (row.player) {
+    if (row.player && row.hero) {
+      return getPlayerColor(row.player, this.setupService.constantsSync.players);
+    } else if (row.teamName && row.hero) {
+      return getHeroColor(row.hero);
+    } else if (row.player) {
       return getPlayerColor(row.player, this.setupService.constantsSync.players);
     } else if (row.teamName) {
       return getTeamColor(row.teamName);
@@ -98,7 +107,13 @@ export class ChartService {
   }
 
   private getLabel(row: QueryResponseRow): string {
-    return row.hero || row.player || row.teamName || '';
+    if (row.teamName && row.hero) {
+      return `${row.teamName} - ${row.hero}`;
+    } else if (row.player && row.hero) {
+      return `${row.player} - ${row.hero}`;
+    } else {
+      return row.hero || row.player || row.teamName || '';
+    }
   }
 
   private getLabelAdditional(row: QueryResponseRow): string | undefined {
@@ -136,6 +151,10 @@ export class ChartService {
       const plotDataRows: DataPointForPlot[] = this.queryService.queryResponseSync.data
         .map((row) => {
           const per10 = row.timePlayed ? row.timePlayed / 600.0 : 0;
+
+          if (this.minTime && row.timePlayed && row.timePlayed < this.minTime * 60) {
+            return undefined;
+          }
 
           // @ts-ignore
           const obj: { [key: string]: number } = {

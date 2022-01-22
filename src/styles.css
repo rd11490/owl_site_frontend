@@ -20,7 +20,7 @@ body, input[text], button {
     font-family: Cambria, Georgia;
 }
 a {
-    cursor: pointe;
+    cursor: pointer;
     cursor: hand;
 }
 button {

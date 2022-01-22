@@ -34,6 +34,11 @@ import { SelectYStatComponent } from './chart-options/select-y-stat.component';
 import { SelectXStatDenomComponent } from './chart-options/select-x-stat-denom.component';
 import { SelectYStatDenomComponent } from './chart-options/select-y-stat-denom.component';
 import { SelectSizeComponent } from './chart-options/select-size.component';
+import { TimePlayedFilterComponent } from './chart-options/time-played-filter.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
+import { MatInput, MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -59,6 +64,7 @@ import { SelectSizeComponent } from './chart-options/select-size.component';
     SelectYStatComponent,
     SelectYStatDenomComponent,
     TablePageComponent,
+    TimePlayedFilterComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -71,6 +77,10 @@ import { SelectSizeComponent } from './chart-options/select-size.component';
     MatTableModule,
     MatTabsModule,
     NgSelectModule,
+    MatFormFieldModule,
+    MatIconModule,
+    FormsModule,
+    MatInputModule,
   ],
   providers: [SetupService, QueryService, ChartService],
   bootstrap: [AppComponent],

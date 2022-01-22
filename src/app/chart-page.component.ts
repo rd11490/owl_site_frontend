@@ -114,6 +114,10 @@ export class ChartPageComponent {
       if (queryParams['size']) {
         this.chartService.selectSize(queryParams['size']);
       }
+
+      if (queryParams['minTime']) {
+        this.chartService.selectMinTime(queryParams['minTime']);
+      }
       this.search();
     }
   }

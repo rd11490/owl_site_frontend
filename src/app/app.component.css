@@ -204,3 +204,7 @@ div.search-text {
     width: max-content;
     margin: auto;
 }
+
+.min-time-form-field {
+    width: 100%;
+}
