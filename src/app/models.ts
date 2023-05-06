@@ -365,3 +365,80 @@ export class QueryResponseRow {
 }
 
 export const intialSetup = new SetupResponse();
+
+export interface ResultsRow {
+  team_one: string;
+  team_one_map_wins: number;
+  team_two: string;
+  team_two_map_wins: number;
+  winner: string;
+  loser: string;
+}
+
+export interface ScheduleRow {
+  week: number;
+  team1Name: string;
+  team2Name: string;
+}
+
+export interface ScheduleResponse {
+  results: ResultsRow[];
+  schedule: ScheduleRow[];
+  table: TableRow[];
+  distribution: DistributionRow[];
+}
+
+export const initialSchedule = {
+  results: [],
+  schedule: [],
+  table: [],
+  distribution: [],
+};
+
+export interface SimRequestRow {
+  sim: boolean;
+  teamOne: string;
+  teamOneWins?: number;
+  teamTwo: string;
+  teamTwoWins?: number;
+}
+
+export type SimType = 'COIN' | 'RMSA';
+
+export interface SimRequest {
+  simType: SimType;
+  results: SimRequestRow[];
+}
+
+export interface TableRow {
+  team: string;
+  league_points: number;
+  wins: number;
+  losses: number;
+  map_differential: number;
+  rank: number;
+}
+
+export interface DistributionRow {
+  team: string;
+  '1': number;
+  '2': number;
+  '3': number;
+  '4': number;
+  '5': number;
+  '6': number;
+  '7': number;
+  '8': number;
+  '9': number;
+  '10': number;
+  '11': number;
+  '12': number;
+  qualify: number;
+}
+
+export interface SimResults {
+  table: TableRow[];
+  distribution: DistributionRow[];
+}
+
+export const initialSimResults = { table: [], distribution: [] };

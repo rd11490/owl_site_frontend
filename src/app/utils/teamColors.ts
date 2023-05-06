@@ -1,5 +1,21 @@
 import { Player } from '../models';
 
+export const westTeams: string[] = [
+  'Atlanta Reign',
+  'Boston Uprising',
+  'Dallas Fuel',
+  'Florida Mayhem',
+  'Los Angeles Gladiators',
+  'Houston Outlaws',
+  'London Spitfire',
+  'New York Excelsior',
+  'Paris Eternal',
+  'San Francisco Shock',
+  'Toronto Defiant',
+  'Vancouver Titans',
+  'Washington Justice',
+];
+
 const teamColors: { [key: string]: string } = {
   'Atlanta Reign': '#910F1B',
   'Boston Uprising': '#174B97',

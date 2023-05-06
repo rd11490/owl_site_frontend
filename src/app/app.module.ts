@@ -38,7 +38,8 @@ import { TimePlayedFilterComponent } from './chart-options/time-played-filter.co
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
-import { MatInput, MatInputModule } from '@angular/material/input';
+import { MatInputModule } from '@angular/material/input';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { MatInput, MatInputModule } from '@angular/material/input';
     MatIconModule,
     FormsModule,
     MatInputModule,
+    MatGridListModule,
   ],
   providers: [SetupService, QueryService, ChartService],
   bootstrap: [AppComponent],

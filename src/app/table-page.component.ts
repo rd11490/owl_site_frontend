@@ -25,6 +25,7 @@ export class TablePageComponent implements OnInit {
   loading: boolean = false;
   loaded: boolean = false;
   queryParamStats: string[] = [];
+  season: string = '2022';
 
   constructor(
     // eslint-disable-next-line no-unused-vars
@@ -36,6 +37,11 @@ export class TablePageComponent implements OnInit {
     // eslint-disable-next-line no-unused-vars
     private router: Router
   ) {
+    this.route.data.subscribe((v) => {
+      this.season = v['season'];
+    });
+    setupService.getSetup(this.season);
+    queryService.setSeason(this.season);
     const queryParams = this.route.snapshot.queryParams != null ? this.route.snapshot.queryParams : undefined;
     if (queryParams && Object.keys(queryParams).length > 0) {
       if (queryParams['aggregation']) {

@@ -16,6 +16,7 @@ export class QueryService {
   players: Player[] = [];
   stages: string[] = [];
   teams: string[] = [];
+  season: string = '2022';
 
   queryResponseSync: QueryResponse = new QueryResponse();
   queryResponse: Promise<QueryResponse> = Promise.resolve(new QueryResponse());
@@ -63,6 +64,10 @@ export class QueryService {
     this.stages = stages;
   }
 
+  setSeason(season: string) {
+    this.season = season;
+  }
+
   buildSearchRequest() {
     return {
       aggregation: this.aggregationType || 'Player',
@@ -75,6 +80,7 @@ export class QueryService {
       players: this.players.map((player) => player.player),
       stages: this.stages,
       teams: this.teams,
+      season: this.season,
     };
   }
 
