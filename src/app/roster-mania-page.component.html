@@ -1,0 +1,90 @@
+<h2>Roster Mania - {{this.currentRegion}}</h2>
+<div class='region-selector'>
+<span >
+  <label>
+    <input type="radio" name="option" value="North America" [(ngModel)]="currentRegion" (change)="swapToNA()">
+    North America
+  </label>
+</span>
+<span>
+  <label>
+    <input type="radio" name="option" value="EMEA" [(ngModel)]="currentRegion" (change)="swapToEMEA()">
+    EMEA
+  </label>
+</span>
+  <span>
+    <button (click)='reset()' class='reset-button'>Reset Teams</button>
+  </span>
+</div>
+<div>
+  The Circuit Point calculator follows the rules outlined <a href='https://esports.overwatch.com/Overwatch_Champions_Series_2024%E2%80%93Official_Rules_v1.0.pdf'>here</a>
+  <br>
+  *Points are only counted from the first 5 players on each team, order matters
+</div>
+
+<div class="example-container">
+  <h2>Players</h2>
+  <input type="text" [(ngModel)]="filterText" (input)="filterItems()" placeholder="Filter Players, Team">
+  <button class='reset-button' (click)="addPlayer()">Add Player</button>
+  <input type="text" [(ngModel)]="addPlayerName" placeholder="Player Name">
+  <div
+    cdkDropList
+    #playersList="cdkDropList"
+    [cdkDropListData]="this.filteredPoints"
+    [cdkDropListConnectedTo]="[teamList1, teamList2, teamList3, teamList4]"
+    class="example-list"
+    (cdkDropListDropped)="dropPlayers($event)">
+    <div class="example-box" *ngFor="let item of filteredPoints; let i = index" cdkDrag><roster-mania-player [player]='item' [indexNum]='i' [team]='false' class='player-container'></roster-mania-player></div>
+  </div>
+</div>
+
+<div class="example-container">
+  <h2>Team 1 ({{this.team1Points}} Points)</h2>
+  <div class='header-break'></div>
+  <div
+    cdkDropList
+    #teamList1="cdkDropList"
+    [cdkDropListData]="this.team1"
+    [cdkDropListConnectedTo]="[playersList, teamList2, teamList3, teamList4]"
+    class="example-list"
+    (cdkDropListDropped)="dropTeam($event)">
+    <div class="example-box" *ngFor="let item of team1; let i = index" cdkDrag><roster-mania-player [player]='item' [indexNum]='i' [team]='true' class='player-container'></roster-mania-player></div>
+  </div>
+
+  <h2>Team 2 ({{this.team2Points}} Points)</h2>
+  <div class='header-break'></div>
+  <div
+    cdkDropList
+    #teamList2="cdkDropList"
+    [cdkDropListData]="this.team2"
+    [cdkDropListConnectedTo]="[playersList, teamList1, teamList3, teamList4]"
+    class="example-list"
+    (cdkDropListDropped)="dropTeam($event)">
+    <div class="example-box" *ngFor="let item of team2; let i = index" cdkDrag><roster-mania-player [player]='item' [indexNum]='i' [team]='true' class='player-container'></roster-mania-player></div>
+  </div>
+</div>
+<div class="example-container">
+  <h2>Team 3 ({{this.team3Points}} Points)</h2>
+  <div class='header-break'></div>
+  <div
+    cdkDropList
+    #teamList3="cdkDropList"
+    [cdkDropListData]="this.team3"
+    [cdkDropListConnectedTo]="[playersList, teamList2, teamList1, teamList4]"
+    class="example-list"
+    (cdkDropListDropped)="dropTeam($event)">
+    <div class="example-box" *ngFor="let item of team3; let i = index" cdkDrag><roster-mania-player [player]='item' [indexNum]='i' [team]='true' class='player-container'></roster-mania-player></div>
+  </div>
+
+  <h2>Team 4 ({{this.team4Points}} Points)</h2>
+  <div class='header-break'></div>
+  <div
+    cdkDropList
+    #teamList4="cdkDropList"
+    [cdkDropListData]="this.team4"
+    [cdkDropListConnectedTo]="[playersList, teamList2, teamList3, teamList1]"
+    class="example-list"
+    (cdkDropListDropped)="dropTeam($event)">
+    <div class="example-box" *ngFor="let item of team4; let i = index" cdkDrag><roster-mania-player [player]='item' [indexNum]='i' [team]='true' class='player-container'></roster-mania-player></div>
+  </div>
+</div>

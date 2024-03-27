@@ -40,6 +40,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { CircuitPointService } from './circuitPoint.service';
+import { RosterManiaPageComponent } from './roster-mania-page.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { RosterManiaPlayerComponent } from './roster-mania-player.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +70,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
     SelectYStatDenomComponent,
     TablePageComponent,
     TimePlayedFilterComponent,
+    RosterManiaPageComponent,
+    RosterManiaPlayerComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -83,8 +89,9 @@ import { MatGridListModule } from '@angular/material/grid-list';
     FormsModule,
     MatInputModule,
     MatGridListModule,
+    DragDropModule,
   ],
-  providers: [SetupService, QueryService, ChartService],
+  providers: [SetupService, QueryService, ChartService, CircuitPointService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
