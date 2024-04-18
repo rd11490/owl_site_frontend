@@ -381,3 +381,23 @@ export class CircuitPointResponse {
 }
 
 export const initialCircuitPoints = new CircuitPointResponse();
+
+export interface FaceitRoster {
+  teamName: string;
+  teamSize: number;
+  playerIgn0: string;
+  playerIgn1: string;
+  playerIgn2: string;
+  playerIgn3: string;
+  playerIgn4: string;
+  playerIgn5: string;
+  playerIgn6: string;
+  playerIgn7: string;
+  coachIgn0: string;
+}
+
+export interface FaceitRosterResponse {
+  [key: string]: FaceitRoster[];
+}
+
+export const initialFaceitRosterResponse = {};

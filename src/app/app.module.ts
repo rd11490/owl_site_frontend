@@ -44,6 +44,9 @@ import { CircuitPointService } from './circuitPoint.service';
 import { RosterManiaPageComponent } from './roster-mania-page.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { RosterManiaPlayerComponent } from './roster-mania-player.component';
+import { RosterService } from './roster.service';
+import { RosterPageComponent } from './roster-page.component';
+import { RosterComponent } from './roster.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +75,8 @@ import { RosterManiaPlayerComponent } from './roster-mania-player.component';
     TimePlayedFilterComponent,
     RosterManiaPageComponent,
     RosterManiaPlayerComponent,
+    RosterPageComponent,
+    RosterComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -91,7 +96,7 @@ import { RosterManiaPlayerComponent } from './roster-mania-player.component';
     MatGridListModule,
     DragDropModule,
   ],
-  providers: [SetupService, QueryService, ChartService, CircuitPointService],
+  providers: [SetupService, QueryService, ChartService, CircuitPointService, RosterService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

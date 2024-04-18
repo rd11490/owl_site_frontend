@@ -42,11 +42,24 @@ export class RosterManiaPageComponent {
   ) {
     circuitPointService.getCircuitPoints();
     circuitPointService.constants.then((points) => {
-      this.naPoints = points.naPoints.sort((left, right) => left.ign.localeCompare(right.ign));
-      this.emeaPoints = points.emeaPoints.sort((left, right) => left.ign.localeCompare(right.ign));
+      this.naPoints = this.sortPlayerPoints(points.naPoints);
+      this.emeaPoints = this.sortPlayerPoints(points.emeaPoints);
       this.points = [...this.naPoints];
       this.filteredPoints = [...this.naPoints];
     });
+  }
+
+  sortPlayerPoints(playerPoints: PlayerCircuitPoints[]): PlayerCircuitPoints[] {
+    const out = playerPoints.sort((left, right) => {
+      if (left.points !== right.points) {
+        return right.points - left.points;
+      }
+      if (left.role[0] !== right.role[0]) {
+        return left.role[0].localeCompare(right.role[0]);
+      }
+      return left.ign.localeCompare(right.ign);
+    });
+    return [...out];
   }
 
   resetEMEA() {
@@ -85,19 +98,17 @@ export class RosterManiaPageComponent {
         teamName: 'No Team',
         playerId: Math.random().toString(10),
         ign: this.addPlayerName,
-        role: [],
+        role: ['Tank', 'Damage', 'Support'],
         points: 0,
       };
       if (this.currentRegion == 'North America') {
-        this.naPoints.concat([newPlayer]).sort((left, right) => left.ign.localeCompare(right.ign));
+        this.naPoints = this.sortPlayerPoints(this.naPoints.concat([newPlayer]));
+        this.points = [...this.naPoints];
       } else {
-        this.emeaPoints.concat([newPlayer]).sort((left, right) => left.ign.localeCompare(right.ign));
+        this.emeaPoints = this.sortPlayerPoints(this.emeaPoints.concat([newPlayer]));
+        this.points = [...this.emeaPoints];
       }
-      this.points = [...this.points].concat([newPlayer]).sort((left, right) => left.ign.localeCompare(right.ign));
-      this.filteredPoints = [...this.filteredPoints]
-        .concat([newPlayer])
-        .sort((left, right) => left.ign.localeCompare(right.ign));
-
+      this.filterItems();
       this.addPlayerName = '';
     }
   }
@@ -105,11 +116,10 @@ export class RosterManiaPageComponent {
   dropPlayers(event: CdkDragDrop<PlayerCircuitPoints[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      this.filteredPoints.sort((left, right) => left.ign.localeCompare(right.ign));
     } else {
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-      this.filteredPoints.sort((left, right) => left.ign.localeCompare(right.ign));
     }
+    this.filteredPoints = this.sortPlayerPoints(this.filteredPoints);
     this.recalculatePoints();
   }
 
