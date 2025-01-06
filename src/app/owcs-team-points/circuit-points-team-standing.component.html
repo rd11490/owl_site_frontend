@@ -1,0 +1,15 @@
+<span class='placement-label'>{{placementLabel()}}</span>
+<span class='team-info'>
+  <div class='team-label'>
+  {{this.teamInfo?.teamName}}
+  </div>
+  <div class='points-warning red' *ngIf='displayNotQualified()'>
+    This team did not qualify
+  </div>
+  <div class='points-warning green' *ngIf='displayQualified()'>
+    This team qualified for Dallas
+  </div>
+</span>
+<span class='points-label'>
+  {{this.teamInfo?.points}} Points
+</span>

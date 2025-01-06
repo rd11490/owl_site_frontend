@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FaceitRoster, FaceitRosterResponse, initialFaceitRosterResponse } from './models';
-import { RosterService } from './roster.service';
+import { FaceitRoster, FaceitRosterResponse, initialFaceitRosterResponse } from '../models';
+import { RosterService } from '../roster.service';
 import { MatTableDataSource } from '@angular/material/table';
 
 /**
@@ -10,7 +10,7 @@ import { MatTableDataSource } from '@angular/material/table';
 @Component({
   selector: 'roster-page',
   templateUrl: './roster-page.component.html',
-  styleUrls: ['./app.component.css', './roster-page.css'],
+  styleUrls: ['../app.component.css', './roster-page.css'],
 })
 export class RosterPageComponent {
   rosterResponse: FaceitRosterResponse = initialFaceitRosterResponse;
@@ -47,7 +47,7 @@ export class RosterPageComponent {
     rosterService.getRosters();
     rosterService.constants.then((rosterResponse) => {
       this.rosterResponse = rosterResponse;
-      this.faceitEvents = Object.keys(rosterResponse);
+      this.faceitEvents = Object.keys(rosterResponse).sort();
       const firstKey = Object.keys(rosterResponse)[0];
       this.currentRegion = firstKey;
       this.rosters = this.sortRosters([...rosterResponse[firstKey]]);

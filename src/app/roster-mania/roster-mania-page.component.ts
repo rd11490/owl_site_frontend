@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
-import { CircuitPointService } from './circuitPoint.service';
+import { CircuitPointService } from '../circuitPoint.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PlayerCircuitPoints } from './models';
+import { PlayerCircuitPoints } from '../models';
 
 /**
  * @title Drag&Drop connected sorting
@@ -10,7 +10,7 @@ import { PlayerCircuitPoints } from './models';
 @Component({
   selector: 'roster-mania-page',
   templateUrl: './roster-mania-page.component.html',
-  styleUrls: ['./app.component.css', './roster-mania-page.css'],
+  styleUrls: ['../app.component.css', './roster-mania-page.css'],
 })
 export class RosterManiaPageComponent {
   naPoints: PlayerCircuitPoints[] = [];
@@ -41,7 +41,7 @@ export class RosterManiaPageComponent {
     private router: Router
   ) {
     circuitPointService.getCircuitPoints();
-    circuitPointService.constants.then((points) => {
+    circuitPointService.playerCircuitPoints.then((points) => {
       this.naPoints = this.sortPlayerPoints(points.naPoints);
       this.emeaPoints = this.sortPlayerPoints(points.emeaPoints);
       this.points = [...this.naPoints];

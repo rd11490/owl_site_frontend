@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { PlayerCircuitPoints } from './models';
+import { PlayerCircuitPoints } from '../models';
 
 @Component({
   selector: 'roster-mania-player',
   templateUrl: './roster-mania-player.component.html',
-  styleUrls: ['./app.component.css', './roster-mania-page.css', './roster-mania-player.css'],
+  styleUrls: ['../app.component.css', './roster-mania-page.css', './roster-mania-player.css'],
 })
 export class RosterManiaPlayerComponent {
   playerInfo: PlayerCircuitPoints | undefined;

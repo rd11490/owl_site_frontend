@@ -401,3 +401,39 @@ export interface FaceitRosterResponse {
 }
 
 export const initialFaceitRosterResponse = {};
+
+export interface TeamPlayerCircuitPoints {
+  region: string;
+  playerId: string;
+  ign: string;
+  teamId: string;
+  teamName: string;
+  prevTeamId: string;
+  points: number;
+  mapsPlayed: number;
+  role: string[];
+  place: string;
+}
+export interface TeamCircuitPoints {
+  [key: string]: TeamPlayerCircuitPoints[];
+}
+
+export interface RegionCircuitPoints {
+  placed: TeamCircuitPoints;
+  competing: TeamCircuitPoints;
+}
+
+export interface TeamCircuitPointResponse {
+  emeaTeams: RegionCircuitPoints;
+  naTeams: RegionCircuitPoints;
+}
+
+export const initialTeamCircuitPoints = {
+  emeaTeams: { placed: {}, competing: {} },
+  naTeams: { placed: {}, competing: {} },
+};
+
+export interface TeamPoints {
+  teamName: string;
+  points: number;
+}

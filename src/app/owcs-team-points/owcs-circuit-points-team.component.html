@@ -1,0 +1,23 @@
+<mat-accordion [style.background-color]="backgroundColor()">
+  <mat-expansion-panel hideToggle [style.background-color]="backgroundColor()">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <div class='placement-label'>{{placementLabel()}}</div>
+        <div>{{this.teamName}} - {{this.teamPoints}} Points</div>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="example-container">
+      <div
+        cdkDropList
+        [cdkDropListData]="this.players"
+        class="example-list"
+        (cdkDropListDropped)="dropPlayers($event)">
+        <div class="example-box" *ngFor="let item of players; let i = index" cdkDrag><circuit-points-player [player]='item' [indexNum]='i' class='player-container'></circuit-points-player></div>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
+
+
+
+

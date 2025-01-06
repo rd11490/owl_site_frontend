@@ -3,8 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home.component';
 import { TablePageComponent } from './table-page.component';
 import { ChartPageComponent } from './chart-page.component';
-import { RosterManiaPageComponent } from './roster-mania-page.component';
-import { RosterPageComponent } from './roster-page.component';
+import { RosterManiaPageComponent } from './roster-mania/roster-mania-page.component';
+import { RosterPageComponent } from './rosters/roster-page.component';
+import { OwcsCircuitPointsPageComponent } from './owcs-team-points/owcs-circuit-points-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: '2023charts', component: ChartPageComponent, data: { season: '2023' } },
   { path: 'owcs-roster-mania', component: RosterManiaPageComponent },
   { path: 'owcs-rosters', component: RosterPageComponent },
+  { path: 'owcs-circuit-points', component: OwcsCircuitPointsPageComponent },
 ];
 
 @NgModule({
