@@ -393,7 +393,19 @@ export interface FaceitRoster {
   playerIgn5: string;
   playerIgn6: string;
   playerIgn7: string;
+  playerIgn8: string;
   coachIgn0: string;
+
+  playerName0: string;
+  playerName1: string;
+  playerName2: string;
+  playerName3: string;
+  playerName4: string;
+  playerName5: string;
+  playerName6: string;
+  playerName7: string;
+  playerName8: string;
+  coachName0: string;
 }
 
 export interface FaceitRosterResponse {

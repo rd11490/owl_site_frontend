@@ -41,16 +41,10 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { CircuitPointService } from './circuitPoint.service';
-import { RosterManiaPageComponent } from './roster-mania/roster-mania-page.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { RosterManiaPlayerComponent } from './roster-mania/roster-mania-player.component';
 import { RosterService } from './roster.service';
 import { RosterPageComponent } from './rosters/roster-page.component';
 import { RosterComponent } from './rosters/roster.component';
-import { OwcsCircuitPointsPageComponent } from './owcs-team-points/owcs-circuit-points-page.component';
-import { OwcsCircuitPointsTeamComponent } from './owcs-team-points/owcs-circuit-points-team.component';
-import { CircuitPointsPlayerComponent } from './owcs-team-points/circuit-points-player.component';
-import { CircuitPointsTeamStandingComponent } from './owcs-team-points/circuit-points-team-standing.component';
 
 @NgModule({
   declarations: [
@@ -77,14 +71,8 @@ import { CircuitPointsTeamStandingComponent } from './owcs-team-points/circuit-p
     SelectYStatDenomComponent,
     TablePageComponent,
     TimePlayedFilterComponent,
-    RosterManiaPageComponent,
-    RosterManiaPlayerComponent,
     RosterPageComponent,
     RosterComponent,
-    OwcsCircuitPointsPageComponent,
-    OwcsCircuitPointsTeamComponent,
-    CircuitPointsPlayerComponent,
-    CircuitPointsTeamStandingComponent,
   ],
   imports: [
     AppRoutingModule,
