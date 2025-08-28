@@ -24,7 +24,7 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: ng build --configuration=production --base-href /
+        run: npm run build -- --configuration=production --base-href /
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
