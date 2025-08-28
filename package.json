@@ -1,15 +1,16 @@
 {
   "dependencies": {
     "@angular/animations": "^14.3.0",
+    "@angular/cdk": "^14.2.7",
     "@angular/common": "^14.3.0",
     "@angular/compiler": "^14.3.0",
     "@angular/core": "^14.3.0",
     "@angular/forms": "^14.3.0",
-    "@angular/material": "^13.1.2",
+    "@angular/material": "^14.2.7",
     "@angular/platform-browser": "^14.3.0",
     "@angular/platform-browser-dynamic": "^14.3.0",
     "@angular/router": "^14.3.0",
-    "@ng-select/ng-select": "^8.1.1",
+    "@ng-select/ng-select": "^9.1.0",
     "d3": "^7.3.0",
     "d3-scale-chromatic": "^3.0.0",
     "d3-zoom": "^3.0.0",
