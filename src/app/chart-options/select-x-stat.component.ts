@@ -43,6 +43,7 @@ export class SelectXStatComponent implements OnInit {
 
   selectX(x?: string) {
     this.chartService.selectX(x);
+    this.chartService.buildChartData();
 
     this.router.navigate([], {
       relativeTo: this.route,

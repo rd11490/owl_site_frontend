@@ -38,6 +38,7 @@ export class SelectYStatDenomComponent implements OnInit {
   }
   selectYDenom(y?: string) {
     this.chartService.selectYDenom(y);
+    this.chartService.buildChartData();
 
     this.router.navigate([], {
       relativeTo: this.route,

@@ -13,7 +13,7 @@ export class ChartService {
   yDenom?: string;
   size?: string;
   minTime?: number;
-  data?: PlotData = this.buildTestData();
+  data?: PlotData;
 
   // eslint-disable-next-line no-unused-vars
   constructor(
@@ -126,7 +126,13 @@ export class ChartService {
   }
 
   public buildChartData() {
+    console.log('Building chart data with:', { x: this.x, y: this.y, xDenom: this.xDenom, yDenom: this.yDenom, size: this.size });
+    if (!this.queryService.queryResponseSync?.data?.length) {
+      console.log('No query data available');
+      return;
+    }
     if (this.x != null && this.y != null && this.queryService.queryResponseSync.data.length > 0) {
+      console.log('Building chart with query data:', this.queryService.queryResponseSync.data.length, 'rows');
       let xLabel: string;
       let yLabel: string;
 

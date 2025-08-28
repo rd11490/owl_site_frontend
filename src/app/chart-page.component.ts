@@ -32,15 +32,10 @@ export class ChartPageComponent {
   size?: string;
 
   constructor(
-    // eslint-disable-next-line no-unused-vars
     private queryService: QueryService,
-    // eslint-disable-next-line no-unused-vars
     private setupService: SetupService,
-    // eslint-disable-next-line no-unused-vars
     private route: ActivatedRoute,
-    // eslint-disable-next-line no-unused-vars
     private chartService: ChartService,
-    // eslint-disable-next-line no-unused-vars
     private router: Router,
   ) {
     this.route.data.subscribe((v) => {
@@ -125,6 +120,9 @@ export class ChartPageComponent {
         this.chartService.selectMinTime(queryParams['minTime']);
       }
       this.search();
+    } else if (this.chartService.data) {
+      // If we already have data but no query params, update the plot
+      this.buildChart();
     }
   }
 
@@ -215,7 +213,16 @@ export class ChartPageComponent {
   }
 
   buildChart() {
+    console.log('Building chart...');
     this.chartService.buildChartData();
-    this.data = this.chartService.data;
+    if (this.chartService.data) {
+      console.log('Chart data available:', this.chartService.data);
+      // Force Angular change detection by creating a new object
+      this.data = {
+        data: [...this.chartService.data.data],
+        xLabel: this.chartService.data.xLabel,
+        yLabel: this.chartService.data.yLabel
+      };
+    }
   }
 }

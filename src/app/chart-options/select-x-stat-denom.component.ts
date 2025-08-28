@@ -38,6 +38,7 @@ export class SelectXStatDenomComponent implements OnInit {
   }
   selectXDenom(x?: string) {
     this.chartService.selectXDenom(x);
+    this.chartService.buildChartData();
 
     this.router.navigate([], {
       relativeTo: this.route,

@@ -38,6 +38,7 @@ export class SelectSizeComponent implements OnInit {
   }
   selectSize(size?: string) {
     this.chartService.selectSize(size);
+    this.chartService.buildChartData();
 
     this.router.navigate([], {
       relativeTo: this.route,

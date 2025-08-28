@@ -38,6 +38,7 @@ export class SelectYStatComponent implements OnInit {
   }
   selectY(y?: string) {
     this.chartService.selectY(y);
+    this.chartService.buildChartData();
 
     this.router.navigate([], {
       relativeTo: this.route,
