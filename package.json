@@ -47,7 +47,7 @@
   "name": "owl-site-frontend",
   "private": true,
   "scripts": {
-    "build": "ng build --prod --base-href /",
+    "build": "ng build --configuration=production --base-href /",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx \"src/\"",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx \"src/\" & prettier --write \"./src/**/**.{js,jsx,ts,tsx}\"",
     "ng": "ng",
