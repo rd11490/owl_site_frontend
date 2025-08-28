@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home.component';
 import { ChartPageComponent } from './chart-page.component';
-import { RosterPageComponent } from './rosters/roster-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -13,7 +12,6 @@ const routes: Routes = [
   { path: 'charts', component: ChartPageComponent, data: { season: '2021' } },
   { path: '2022charts', component: ChartPageComponent, data: { season: '2022' } },
   { path: '2023charts', component: ChartPageComponent, data: { season: '2023' } },
-  { path: 'owcs-rosters', component: RosterPageComponent },
   { path: '**', redirectTo: '/home' },
 ];
 

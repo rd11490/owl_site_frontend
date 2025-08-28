@@ -139,16 +139,24 @@ export class ChartPageComponent {
     this.loading = true;
     this.loaded = false;
 
-    this.queryService.runQuery().then((resp) => {
-      this.queryResponse = resp;
-      this.loading = false;
-      this.loaded = true;
-      if (resp.data.length > 0) {
-        this.showSelector = false;
+    this.queryService.runQuery().then(
+      (resp) => {
+        this.queryResponse = resp;
+        this.loading = false;
+        this.loaded = true;
+        if (resp.data.length > 0) {
+          this.showSelector = false;
+        }
+        this.stats = resp.stats;
+        this.buildChart();
+      },
+      (error) => {
+        console.error('Search failed:', error);
+        this.loading = false;
+        this.loaded = true;
+        this.showSelector = true;
       }
-      this.stats = resp.stats;
-      this.buildChart();
-    });
+    );
   }
 
   selectionText() {

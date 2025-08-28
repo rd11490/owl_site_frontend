@@ -44,14 +44,14 @@ export class SelectAggregationTypeComponent implements OnInit {
     }
   }
 
-  selectAggregationType(aggregationType?: { label: string; value: string }) {
-    if (aggregationType) {
-      this.queryService.setAggregationType(aggregationType.value);
+  selectAggregationType(event: any) {
+    if (event && event.value) {
+      this.queryService.setAggregationType(event.value);
 
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: {
-          aggregation: aggregationType.value,
+          aggregation: event.value,
         },
         queryParamsHandling: 'merge',
         skipLocationChange: false,

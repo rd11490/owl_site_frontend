@@ -134,23 +134,37 @@ export class QueryService {
   }
 
   runQuery(): Promise<QueryResponse> {
+    const request = this.buildSearchRequest();
+    console.log('Making query with request:', request);
+
     this.queryResponse = firstValueFrom(
       this.http
         .post<QueryResponse>(
           'https://mb1m37u0ig.execute-api.us-east-1.amazonaws.com/dev/query',
-          this.buildSearchRequest()
+          request
         )
-        .pipe(catchError(this.handleError))
-    ).then((response) => {
-      this.queryResponseSync = response;
-      return response;
-    });
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            console.error('Query failed:', error);
+            return observableThrowError(() => new Error(error.message || 'Server error'));
+          })
+        )
+    ).then(
+      (response) => {
+        this.queryResponseSync = response;
+        return response;
+      },
+      (error) => {
+        console.error('Query failed:', error);
+        return new QueryResponse();
+      }
+    );
 
     return this.queryResponse;
   }
 
-  private handleError(res: HttpErrorResponse) {
-    console.error(res.error);
-    return observableThrowError(res.error || 'Server error');
+  private handleError(error: HttpErrorResponse) {
+    console.error('An error occurred:', error);
+    return observableThrowError(() => new Error(error.message || 'Server error'));
   }
 }

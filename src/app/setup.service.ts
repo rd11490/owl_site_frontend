@@ -17,15 +17,26 @@ export class SetupService {
     this.constants = firstValueFrom(
       this.http
         .get<SetupResponse>(`https://mb1m37u0ig.execute-api.us-east-1.amazonaws.com/dev/setup?season=${season}`)
-        .pipe(catchError(this.handleError))
-    ).then((setup) => {
-      this.constantsSync = setup;
-      return setup;
-    });
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            console.error('An error occurred:', error);
+            return observableThrowError(() => new Error(error.message || 'Server error'));
+          })
+        )
+    ).then(
+      (setup) => {
+        this.constantsSync = setup;
+        return setup;
+      },
+      (error) => {
+        console.error('Failed to get setup:', error);
+        return intialSetup;
+      }
+    );
   }
 
-  private handleError(res: HttpErrorResponse) {
-    console.error(res.error);
-    return observableThrowError(res.error || 'Server error');
+  private handleError(error: HttpErrorResponse) {
+    console.error('An error occurred:', error);
+    return observableThrowError(() => new Error(error.message || 'Server error'));
   }
 }
