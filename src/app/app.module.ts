@@ -55,7 +55,6 @@ import { QueryService } from './query.service';
 import { ChartService } from './chart.service';
 import { CircuitPointService } from './circuitPoint.service';
 
-
 @NgModule({
   declarations: [
     AppComponent,

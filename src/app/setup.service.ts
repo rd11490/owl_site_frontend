@@ -21,8 +21,8 @@ export class SetupService {
           catchError((error: HttpErrorResponse) => {
             console.error('An error occurred:', error);
             return observableThrowError(() => new Error(error.message || 'Server error'));
-          })
-        )
+          }),
+        ),
     ).then(
       (setup) => {
         this.constantsSync = setup;
@@ -31,7 +31,7 @@ export class SetupService {
       (error) => {
         console.error('Failed to get setup:', error);
         return intialSetup;
-      }
+      },
     );
   }
 

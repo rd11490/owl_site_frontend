@@ -16,7 +16,10 @@ export class ChartService {
   data?: PlotData = this.buildTestData();
 
   // eslint-disable-next-line no-unused-vars
-  constructor(private queryService: QueryService, private setupService: SetupService) {}
+  constructor(
+    private queryService: QueryService,
+    private setupService: SetupService,
+  ) {}
 
   selectX(x?: string) {
     this.x = x;

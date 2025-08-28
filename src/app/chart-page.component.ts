@@ -41,7 +41,7 @@ export class ChartPageComponent {
     // eslint-disable-next-line no-unused-vars
     private chartService: ChartService,
     // eslint-disable-next-line no-unused-vars
-    private router: Router
+    private router: Router,
   ) {
     this.route.data.subscribe((v) => {
       this.season = v['season'];
@@ -58,7 +58,7 @@ export class ChartPageComponent {
         this.queryService.setCompsition(
           queryParams['composition'].split(',').map((c: string) => ({
             cluster: c,
-          }))
+          })),
         );
       }
 
@@ -66,7 +66,7 @@ export class ChartPageComponent {
         this.queryService.setOpponentCompsition(
           queryParams['opponentComposition'].split(',').map((c: string) => ({
             cluster: c,
-          }))
+          })),
         );
       }
 
@@ -98,7 +98,7 @@ export class ChartPageComponent {
         this.queryService.setPlayers(
           queryParams['players'].split(',').map((p: string) => ({
             player: p,
-          }))
+          })),
         );
       }
       if (queryParams['xStat']) {
@@ -155,7 +155,7 @@ export class ChartPageComponent {
         this.loading = false;
         this.loaded = true;
         this.showSelector = true;
-      }
+      },
     );
   }
 

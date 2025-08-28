@@ -20,10 +20,10 @@ export class SelectCompositionComponent implements OnInit {
     // eslint-disable-next-line no-unused-vars
     private route: ActivatedRoute,
     // eslint-disable-next-line no-unused-vars
-    private router: Router
+    private router: Router,
   ) {
     this.compositions = setupService.constants.then((setup) =>
-      setup.comps.sort((a, b) => (a.label > b.label ? 1 : -1))
+      setup.comps.sort((a, b) => (a.label > b.label ? 1 : -1)),
     );
   }
 

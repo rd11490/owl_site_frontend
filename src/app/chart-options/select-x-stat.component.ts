@@ -19,7 +19,7 @@ export class SelectXStatComponent implements OnInit {
     // eslint-disable-next-line no-unused-vars
     private router: Router,
     // eslint-disable-next-line no-unused-vars
-    private chartService: ChartService
+    private chartService: ChartService,
   ) {}
 
   @ViewChild(NgSelectComponent, { static: false }) ngSelect!: NgSelectComponent;

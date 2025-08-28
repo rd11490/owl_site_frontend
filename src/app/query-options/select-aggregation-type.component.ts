@@ -19,7 +19,7 @@ export class SelectAggregationTypeComponent implements OnInit {
     // eslint-disable-next-line no-unused-vars
     private route: ActivatedRoute,
     // eslint-disable-next-line no-unused-vars
-    private router: Router
+    private router: Router,
   ) {
     this.aggregationType = [
       { value: 'PLAYER', label: 'By Player' },

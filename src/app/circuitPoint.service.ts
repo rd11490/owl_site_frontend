@@ -25,7 +25,7 @@ export class CircuitPointService {
     this.playerCircuitPoints = firstValueFrom(
       this.http
         .get<CircuitPointResponse>(`https://mb1m37u0ig.execute-api.us-east-1.amazonaws.com/dev/circuitPoints`)
-        .pipe(catchError(this.handleError))
+        .pipe(catchError(this.handleError)),
     ).then((setup) => {
       this.playerCircuitPointsSync = setup;
       return setup;
@@ -36,7 +36,7 @@ export class CircuitPointService {
     this.teamCircuitPoints = firstValueFrom(
       this.http
         .get<TeamCircuitPointResponse>(`https://mb1m37u0ig.execute-api.us-east-1.amazonaws.com/dev/teamCircuitPoints`)
-        .pipe(catchError(this.handleError))
+        .pipe(catchError(this.handleError)),
     ).then((setup) => {
       this.teamCircuitPointsSync = setup;
       return setup;

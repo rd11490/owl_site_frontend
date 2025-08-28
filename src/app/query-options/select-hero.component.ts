@@ -19,7 +19,7 @@ export class SelectHeroComponent implements OnInit {
     // eslint-disable-next-line no-unused-vars
     private route: ActivatedRoute,
     // eslint-disable-next-line no-unused-vars
-    private router: Router
+    private router: Router,
   ) {
     this.heroes = setupService.constants.then((setup) => setup.heroes.sort());
   }

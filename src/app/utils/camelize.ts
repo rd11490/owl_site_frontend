@@ -10,7 +10,7 @@ export function camelize(str: string) {
           .filter((word) => word.length > 0)
           .map((word) => {
             return word[0].toUpperCase() + word.slice(1).toLowerCase();
-          })
+          }),
       )
       .join('')
       .replace(/[^a-zA-Z0-9 -]/g, '');

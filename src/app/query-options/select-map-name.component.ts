@@ -18,7 +18,7 @@ export class SelectMapNameComponent implements OnInit {
     // eslint-disable-next-line no-unused-vars
     private route: ActivatedRoute,
     // eslint-disable-next-line no-unused-vars
-    private router: Router
+    private router: Router,
   ) {
     this.mapNames = setupService.constants.then((setup) => setup.mapNames.sort());
   }

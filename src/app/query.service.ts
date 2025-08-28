@@ -138,17 +138,12 @@ export class QueryService {
     console.log('Making query with request:', request);
 
     this.queryResponse = firstValueFrom(
-      this.http
-        .post<QueryResponse>(
-          'https://mb1m37u0ig.execute-api.us-east-1.amazonaws.com/dev/query',
-          request
-        )
-        .pipe(
-          catchError((error: HttpErrorResponse) => {
-            console.error('Query failed:', error);
-            return observableThrowError(() => new Error(error.message || 'Server error'));
-          })
-        )
+      this.http.post<QueryResponse>('https://mb1m37u0ig.execute-api.us-east-1.amazonaws.com/dev/query', request).pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Query failed:', error);
+          return observableThrowError(() => new Error(error.message || 'Server error'));
+        }),
+      ),
     ).then(
       (response) => {
         this.queryResponseSync = response;
@@ -157,7 +152,7 @@ export class QueryService {
       (error) => {
         console.error('Query failed:', error);
         return new QueryResponse();
-      }
+      },
     );
 
     return this.queryResponse;

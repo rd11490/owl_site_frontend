@@ -94,7 +94,7 @@ export class PlotComponent implements OnInit {
           .attr('fill', 'black')
           .attr('text-anchor', 'middle')
           .text(this.dataToPlot.xLabel)
-          .style('font-size', '16px')
+          .style('font-size', '16px'),
       );
 
     const minYPlot = minY - 0.1 * Math.abs(yRange);
@@ -125,7 +125,7 @@ export class PlotComponent implements OnInit {
           .attr('text-anchor', 'middle')
           .text(this.dataToPlot.yLabel)
           .style('font-size', '16px')
-          .attr('transform', 'rotate(-90)')
+          .attr('transform', 'rotate(-90)'),
       );
 
     const zoom = d3

@@ -17,7 +17,7 @@ export class RosterService {
     this.constants = firstValueFrom(
       this.http
         .get<FaceitRosterResponse>(`https://mb1m37u0ig.execute-api.us-east-1.amazonaws.com/dev/faceitRosters`)
-        .pipe(catchError(this.handleError))
+        .pipe(catchError(this.handleError)),
     ).then((setup) => {
       this.constantsSync = setup;
       return setup;

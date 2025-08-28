@@ -19,7 +19,7 @@ export class SelectPlayerComponent implements OnInit {
     // eslint-disable-next-line no-unused-vars
     private route: ActivatedRoute,
     // eslint-disable-next-line no-unused-vars
-    private router: Router
+    private router: Router,
   ) {
     this.players = setupService.constants.then((setup) => setup.players.sort((a, b) => (a.player > b.player ? 1 : -1)));
   }

@@ -18,7 +18,7 @@ export class SelectOpponentTeamComponent implements OnInit {
     // eslint-disable-next-line no-unused-vars
     private route: ActivatedRoute,
     // eslint-disable-next-line no-unused-vars
-    private router: Router
+    private router: Router,
   ) {
     this.teams = setupService.constants.then((setup) => setup.teams.sort());
   }
