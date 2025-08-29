@@ -1,23 +1,37 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import * as d3 from 'd3';
-import * as d3Select from 'd3-selection';
+import { Selection } from 'd3-selection';
 import { DataPointForPlot, PlotData } from './models';
+
+interface Scales {
+  xScale: d3.ScaleLinear<number, number>;
+  yScale: d3.ScaleLinear<number, number>;
+  radiusScale: d3.ScaleLinear<number, number>;
+}
 
 @Component({
   selector: 'plot',
   templateUrl: './plot.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class PlotComponent implements OnInit {
-  private svg: any;
-  private scatter: any;
-  private tooltip: any;
+export class PlotComponent implements OnInit, OnDestroy {
+  private svg!: d3.Selection<SVGGElement, unknown, HTMLElement, any>;
+  private scatter!: d3.Selection<SVGGElement, unknown, HTMLElement, any>;
+  private tooltip!: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>;
 
-  private width: number = 1000;
-  private height: number = 500;
-
-  private minDotSize = 5;
-  private maxDotSize = 25;
+  // Chart dimensions and settings
+  private readonly width: number = 1000;
+  private readonly height: number = 500;
+  private readonly minDotSize = 5;
+  private readonly maxDotSize = 25;
+  private readonly margin = { top: 0, right: 0, bottom: 100, left: 100 };
+  
+  // Scales for the chart
+  private scales: Scales = {
+    xScale: d3.scaleLinear(),
+    yScale: d3.scaleLinear(),
+    radiusScale: d3.scaleLinear()
+  };
 
   private _data: PlotData = {
     data: [],
@@ -43,11 +57,19 @@ export class PlotComponent implements OnInit {
     return this._data;
   }
 
-  private margin = { top: 0, right: 0, bottom: 100, left: 100 };
-
   constructor() {}
 
   ngOnInit() {
+    this.initTooltip();
+    this.initSvg();
+  }
+
+  ngOnDestroy() {
+    this.tooltip?.remove();
+    this.svg?.remove();
+  }
+
+  private initTooltip() {
     this.tooltip = d3.select('body')
       .append('div')
       .attr('class', 'tooltip')
@@ -58,7 +80,6 @@ export class PlotComponent implements OnInit {
       .style('padding', '5px')
       .style('border', '1px solid #000')
       .style('color', '#000');
-    this.initSvg();
   }
 
   private redraw(): void {
@@ -70,7 +91,7 @@ export class PlotComponent implements OnInit {
   private initSvg(): void {
     console.log('Initializing SVG...');
     // First clear any existing SVG content
-    const existingSvg = d3Select.select('svg#plot');
+    const existingSvg = d3.select<SVGSVGElement, unknown>('svg#plot');
     console.log('Found SVG element:', existingSvg.node());
     existingSvg.selectAll('*').remove();
     
@@ -127,100 +148,71 @@ export class PlotComponent implements OnInit {
     }
   }
 
+  private createScales(data: DataPointForPlot[]) {
+    // Use d3.extent for more efficient min/max calculation
+    const xExtent = d3.extent(data, d => d.x) as [number, number];
+    const yExtent = d3.extent(data, d => d.y) as [number, number];
+    const sizeExtent = d3.extent(data, d => d.size) as [number, number];
+
+    // Calculate padding
+    const xRange = xExtent[1] - xExtent[0];
+    const yRange = yExtent[1] - yExtent[0];
+    const xPadding = xRange * 0.2;
+    const yPadding = yRange * 0.2;
+
+    // Create scales
+    const xScale = d3.scaleLinear()
+      .domain([xExtent[0] - xPadding, xExtent[1] + xPadding])
+      .range([0, this.width - this.margin.left - this.margin.right]);
+
+    const yScale = d3.scaleLinear()
+      .domain([yExtent[0] - yPadding, yExtent[1] + yPadding])
+      .range([this.height - this.margin.top - this.margin.bottom, 0]);
+
+    const radiusScale = d3.scaleLinear()
+      .domain(sizeExtent)
+      .range([this.minDotSize, this.maxDotSize]);
+
+    return { xScale, yScale, radiusScale };
+  }
+
   private plotData(): void {
-    if (!this._data || !this._data.data || this._data.data.length === 0) {
+    if (!this._data?.data?.length) {
       console.log('No data to plot:', this._data);
       return;
     }
-    console.log('Plotting data:', this._data);
 
-    const xs = this._data.data.map((r: DataPointForPlot) => r.x);
-    const ys = this._data.data.map((r: DataPointForPlot) => r.y);
-    const sizes = this._data.data.map((r: DataPointForPlot) => r.size);
-    console.log('Size range:', { min: Math.min(...sizes), max: Math.max(...sizes) });
-    const scaleRadius = d3
-      .scaleLinear()
-      .domain([Math.min(...sizes), Math.max(...sizes)])
-      .range([this.minDotSize, this.maxDotSize]);
-
-    const xScale = d3
-      .scaleLinear()
-      .domain([Math.min(...xs), Math.max(...xs)])
-      .range([0, this.width - this.margin.left - this.margin.right]);
-
-    const yScale = d3
-      .scaleLinear()
-      .domain([Math.min(...ys), Math.max(...ys)])
-      .range([this.height - this.margin.top - this.margin.bottom, 0]);
-      
+    // Update the component's scales
+    this.scales = this.createScales(this._data.data);
+    
     console.log('Scale ranges:', {
       x: [0, this.width - this.margin.left - this.margin.right],
       y: [this.height - this.margin.top - this.margin.bottom, 0]
     });
 
-    const xAxis = d3.axisBottom(xScale);
-    const yAxis = d3.axisLeft(yScale);
+    const xAxis = d3.axisBottom(this.scales.xScale);
+    const yAxis = d3.axisLeft(this.scales.yScale);
 
     // Setup zoom behavior
     const zoom = d3.zoom<SVGSVGElement, unknown>()
       .extent([[0, 0], [this.width, this.height]])
       .on('zoom', (event) => {
         // Rescale the axes using d3-zoom's built-in transform scaling
-        const newXScale = event.transform.rescaleX(xScale);
-        const newYScale = event.transform.rescaleY(yScale);
+        const newXScale = event.transform.rescaleX(this.scales.xScale);
+        const newYScale = event.transform.rescaleY(this.scales.yScale);
         
         // Update axes with new scales
-        this.svg.select('.x-axis').call(d3.axisBottom(newXScale));
-        this.svg.select('.y-axis').call(d3.axisLeft(newYScale));
+        this.svg.select<SVGGElement>('.x-axis').call(d3.axisBottom(newXScale) as any);
+        this.svg.select<SVGGElement>('.y-axis').call(d3.axisLeft(newYScale) as any);
         
         // Update point groups
-        this.scatter.selectAll('g.point')
-          .attr('transform', (d: DataPointForPlot) => {
+        this.scatter.selectAll<SVGGElement, DataPointForPlot>('g.point')
+          .attr('transform', d => {
             const x = newXScale(d.x);
             const y = newYScale(d.y);
             return `translate(${x},${y})`;
           });
       });
-
-    // Add zoom to the SVG
-    const svgElement = d3.select<SVGSVGElement, unknown>('svg#plot');
-    svgElement.call(zoom as any);
-
-    // Calculate the maximum radius for any point
-    const maxRadius = scaleRadius(Math.max(...sizes));
-    
-    // Calculate label height (font size + padding)
-    const labelHeight = 12 + 5; // 12px font size + 5px padding
-    
-    // Calculate the total vertical space needed for a point (circle + label)
-    const maxPointHeight = maxRadius + labelHeight;
-    
-    // Calculate the initial zoom transform to fit all data
-    const xExtent = d3.extent(this._data.data, d => d.x) as [number, number];
-    const yExtent = d3.extent(this._data.data, d => d.y) as [number, number];
-    
-    // Calculate the data ranges
-    const xRange = xExtent[1] - xExtent[0];
-    const yRange = yExtent[1] - yExtent[0];
-    
-    // Use 20% padding for both axes
-    const xPadding = xRange * 0.2;
-    const yPadding = yRange * 0.2;
-    
-    xScale.domain([
-      xExtent[0] - xPadding,
-      xExtent[1] + xPadding
-    ]);
-    
-    yScale.domain([
-      yExtent[0] - yPadding,
-      yExtent[1] + yPadding
-    ]);
-
-    // Initialize with scales that fit all data
-    d3.select<SVGSVGElement, unknown>('svg#plot')
-      .call(zoom)
-      .call(zoom.transform, d3.zoomIdentity);
 
     // Add zoom to the SVG
     d3.select<SVGSVGElement, unknown>('svg#plot').call(zoom as any);
@@ -292,8 +284,8 @@ export class PlotComponent implements OnInit {
       .join('g')
       .attr('class', 'point')
       .attr('transform', (row: DataPointForPlot) => {
-        const x = xScale(row.x);
-        const y = yScale(row.y);
+        const x = this.scales.xScale(row.x);
+        const y = this.scales.yScale(row.y);
         return `translate(${x},${y})`;
       });
 
@@ -301,7 +293,7 @@ export class PlotComponent implements OnInit {
     points.append('circle')
       .attr('class', 'dot')
       .attr('r', (row: DataPointForPlot) => {
-        const r = scaleRadius(row.size);
+        const r = this.scales.radiusScale(row.size);
         console.log('Setting radius for point', row.label, ':', { size: row.size, r });
         return r;
       })
@@ -315,7 +307,7 @@ export class PlotComponent implements OnInit {
       .attr('class', 'point-label')
       .attr('text-anchor', 'middle')
       .attr('y', (d: DataPointForPlot) => {
-        const radius = scaleRadius(d.size);
+        const radius = this.scales.radiusScale(d.size);
         return -radius - 5; // Position above the circle with 5px padding
       })
       .style('font-size', '12px')
@@ -339,7 +331,7 @@ export class PlotComponent implements OnInit {
           
         this.tooltip
           .html(d.label + (d.labelAdditional ? `<br/>${d.labelAdditional}` : '') + 
-                `<br/>X: ${d.xLabel}<br/>Y: ${d.yLabel}<br/>Size: ${d.sizeLabel}`)
+                `<br/>${d.xLabel}: ${d.x.toFixed(2)}<br/>${d.yLabel}: ${d.y.toFixed(2)}<br/>${d.sizeLabel}: ${d.size.toFixed(2)}`)
           .style('left', `${e.pageX + 10}px`)
           .style('top', `${e.pageY - 10}px`);
       })
