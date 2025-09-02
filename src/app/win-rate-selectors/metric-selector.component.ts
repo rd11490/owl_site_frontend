@@ -10,7 +10,16 @@ export type MetricType = 'Win Rate' | 'Pick Rate';
 
 @Component({
   selector: 'metric-selector',
-  // No longer standalone - using module imports
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    MatOptionModule,
+  ],
   template: `
     <div class="metric-selector">
       <mat-form-field appearance="fill">

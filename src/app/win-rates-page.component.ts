@@ -1,12 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule, AsyncPipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
-import { CommonModule } from '@angular/common';
 import { WinRateData, WinRateRequest } from './models';
 import { WinRateService } from './win-rate.service';
 import { WinRateQueryParamsService } from './win-rate-query-params.service';
 import { MetricType } from './win-rate-selectors/metric-selector.component';
-import { WinRateSelectorsModule } from './win-rate-selectors/win-rate-selectors.module';
+import { RankSelectorComponent } from './win-rate-selectors/rank-selector.component';
+import { RegionSelectorComponent } from './win-rate-selectors/region-selector.component';
+import { MapSelectorComponent } from './win-rate-selectors/map-selector.component';
+import { HeroSelectorComponent } from './win-rate-selectors/hero-selector.component';
+import { DateRangeSelectorComponent } from './win-rate-selectors/date-range-selector.component';
+import { MetricSelectorComponent } from './win-rate-selectors/metric-selector.component';
+import { WinRatePlotComponent } from './win-rate-selectors/win-rate-plot.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({

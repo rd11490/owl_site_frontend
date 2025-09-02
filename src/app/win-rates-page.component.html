@@ -4,25 +4,43 @@
   <div class="filters">
     <div class="filter-row">
       <div class="filter-group">
-        <rank-selector [selectedRanks]="selectedRanks" (ranksChange)="onRanksChange($event)"></rank-selector>
+        <rank-selector 
+          [selectedRanks]="selectedRanks" 
+          (ranksChange)="onRanksChange($event)">
+        </rank-selector>
       </div>
       <div class="filter-group">
-        <region-selector [selectedRegions]="selectedRegions" (regionsChange)="onRegionsChange($event)"></region-selector>
+        <region-selector 
+          [selectedRegions]="selectedRegions" 
+          (regionsChange)="onRegionsChange($event)">
+        </region-selector>
       </div>
       <div class="filter-group">
-        <map-selector [selectedMaps]="selectedMaps" (mapsChange)="onMapsChange($event)"></map-selector>
+        <map-selector 
+          [selectedMaps]="selectedMaps" 
+          (mapsChange)="onMapsChange($event)">
+        </map-selector>
       </div>
     </div>
     
     <div class="filter-row">
       <div class="filter-group">
-        <hero-selector [selectedHeroes]="selectedHeroes" (heroesChange)="onHeroesChange($event)"></hero-selector>
+        <hero-selector 
+          [selectedHeroes]="selectedHeroes" 
+          (heroesChange)="onHeroesChange($event)">
+        </hero-selector>
       </div>
       <div class="filter-group">
-        <date-range-selector [initialRange]="initialDateRange" (dateRangeChange)="onDateRangeChange($event)"></date-range-selector>
+        <date-range-selector 
+          [initialRange]="initialDateRange" 
+          (dateRangeChange)="onDateRangeChange($event)">
+        </date-range-selector>
       </div>
       <div class="filter-group">
-        <metric-selector [selectedMetric]="selectedMetric" (metricChange)="onMetricChange($event)"></metric-selector>
+        <metric-selector 
+          [selectedMetric]="selectedMetric" 
+          (metricChange)="onMetricChange($event)">
+        </metric-selector>
       </div>
     </div>
   </div>

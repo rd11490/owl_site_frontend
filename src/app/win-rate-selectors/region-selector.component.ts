@@ -7,7 +7,15 @@ import { MatOptionModule } from '@angular/material/core';
 
 @Component({
   selector: 'region-selector',
-  // No longer standalone - using module imports
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+  ],
   template: `
     <div class="region-selector">
       <mat-form-field appearance="fill">

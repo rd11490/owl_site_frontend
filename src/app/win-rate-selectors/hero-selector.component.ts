@@ -8,7 +8,15 @@ import { SetupService } from '../setup.service';
 
 @Component({
   selector: 'hero-selector',
-  // No longer standalone - using module imports
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+  ],
   template: `
     <div class="hero-selector">
       <mat-form-field appearance="fill">
@@ -44,15 +52,17 @@ export class HeroSelectorComponent implements OnInit {
     // Get heroes from setup service
     const setup = await this.setupService.constants;
     this.heroes = setup.heroes.sort();
-    
+
     // Set initial value if provided
     if (this.selectedHeroes.length > 0) {
       this.heroControl.setValue(this.selectedHeroes);
     }
 
-    // Subscribe to changes
+    // Subscribe to value changes
     this.heroControl.valueChanges.subscribe(values => {
-      this.heroesChange.emit(values || []);
+      if (values) {
+        this.heroesChange.emit(values);
+      }
     });
   }
 

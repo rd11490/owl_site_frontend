@@ -14,12 +14,22 @@ interface DateRange {
 
 @Component({
   selector: 'date-range-selector',
-  // No longer standalone - using module imports
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule,
+    MatButtonToggleModule,
+  ],
   template: `
     <div class="date-range-selector">
       <mat-form-field appearance="fill">
         <mat-label>Date Range</mat-label>
-        <mat-date-range-input [formGroup]="dateRange" [rangePicker]="picker" [max]="maxDate">
+        <mat-date-range-input [formGroup]="dateRange" [rangePicker]="picker">
           <input matStartDate 
                  formControlName="start" 
                  placeholder="Start date">

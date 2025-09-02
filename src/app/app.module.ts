@@ -1,9 +1,10 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 // Material Modules
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -20,7 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -29,9 +30,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
-
-// Third Party Modules
-import { NgSelectModule } from '@ng-select/ng-select';
+// Import async pipe
+import { AsyncPipe } from '@angular/common';
 
 // Components
 import { AppComponent } from './app.component';
@@ -41,7 +41,14 @@ import { HomeComponent } from './home.component';
 import { NavigationComponent } from './navigation.component';
 import { PlotComponent } from './plot.component';
 import { WinRatesPageComponent } from './win-rates-page.component';
-import { WinRateSelectorsModule } from './win-rate-selectors/win-rate-selectors.module';
+// Win Rate Selector Components
+import { RankSelectorComponent } from './win-rate-selectors/rank-selector.component';
+import { RegionSelectorComponent } from './win-rate-selectors/region-selector.component';
+import { MapSelectorComponent } from './win-rate-selectors/map-selector.component';
+import { HeroSelectorComponent } from './win-rate-selectors/hero-selector.component';
+import { DateRangeSelectorComponent } from './win-rate-selectors/date-range-selector.component';
+import { MetricSelectorComponent } from './win-rate-selectors/metric-selector.component';
+import { WinRatePlotComponent } from './win-rate-selectors/win-rate-plot.component';
 
 // Query Option Components
 import { SelectorComponent } from './query-options/selector.component';
@@ -77,6 +84,16 @@ import { CircuitPointService } from './circuitPoint.service';
     HomeComponent,
     NavigationComponent,
     PlotComponent,
+    // Win Rate Selector Components
+    RankSelectorComponent,
+    RegionSelectorComponent,
+    MapSelectorComponent,
+    HeroSelectorComponent,
+    DateRangeSelectorComponent,
+    MetricSelectorComponent,
+    WinRatePlotComponent,
+    WinRatesPageComponent,
+    // Query Option Components
     SelectAggregationTypeComponent,
     SelectCompositionComponent,
     SelectHeroComponent,
@@ -94,36 +111,64 @@ import { CircuitPointService } from './circuitPoint.service';
     SelectYStatComponent,
     SelectYStatDenomComponent,
     TimePlayedFilterComponent,
-    WinRatesPageComponent,
   ],
   imports: [
     AppRoutingModule,
-    BrowserAnimationsModule,
     BrowserModule,
+    BrowserAnimationsModule,
     CommonModule,
-    HttpClientModule,
     FormsModule,
-    ReactiveFormsModule,
-    WinRateSelectorsModule,
+    NgSelectModule,
+    DragDropModule,
+    FormsModule,
+    HttpClientModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatCardModule,
+    MatDatepickerModule,
     MatExpansionModule,
+    MatFormFieldModule,
+    MatGridListModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatMenuModule,
+    MatNativeDateModule,
+    MatOptionModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatSelectModule,
+    MatSidenavModule,
+    MatSlideToggleModule,
     MatSortModule,
     MatTableModule,
     MatTabsModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatGridListModule,
-    MatSelectModule,
-    MatOptionModule,
-    DragDropModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatButtonToggleModule,
+    MatToolbarModule,
     NgSelectModule,
+    ReactiveFormsModule,
   ],
-  providers: [SetupService, QueryService, ChartService, CircuitPointService],
+  providers: [
+    AsyncPipe,
+    SetupService,
+    QueryService,
+    ChartService,
+    CircuitPointService,
+    { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
+    {
+      provide: MAT_DATE_FORMATS,
+      useValue: {
+        parse: {
+          dateInput: 'YYYY-MM-DD',
+        },
+        display: {
+          dateInput: 'YYYY-MM-DD',
+          monthYearLabel: 'MMM YYYY',
+          dateA11yLabel: 'LL',
+          monthYearA11yLabel: 'MMMM YYYY',
+        },
+      },
+    }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -8,7 +8,15 @@ import { transformMapName } from '../utils/map-name-transformer';
 
 @Component({
   selector: 'map-selector',
-  // No longer standalone - using module imports
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+  ],
   template: `
     <div class="map-selector">
       <mat-form-field appearance="fill">
