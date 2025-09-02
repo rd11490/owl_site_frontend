@@ -1,16 +1,8 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { NgSelectModule, NgSelectComponent } from '@ng-select/ng-select';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
   selector: 'rank-selector',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    NgSelectModule
-  ],
   template: `
     <div class="rank-selector">
       <ng-select

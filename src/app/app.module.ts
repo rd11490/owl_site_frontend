@@ -117,8 +117,6 @@ import { CircuitPointService } from './circuitPoint.service';
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
-    FormsModule,
-    NgSelectModule,
     DragDropModule,
     FormsModule,
     HttpClientModule,
@@ -145,7 +143,7 @@ import { CircuitPointService } from './circuitPoint.service';
     MatTabsModule,
     MatToolbarModule,
     NgSelectModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     AsyncPipe,

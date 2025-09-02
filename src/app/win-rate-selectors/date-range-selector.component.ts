@@ -1,11 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { FormControl, FormGroup } from '@angular/forms';
 
 interface DateRange {
   min: string;
@@ -14,17 +8,7 @@ interface DateRange {
 
 @Component({
   selector: 'date-range-selector',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatInputModule,
-    MatButtonToggleModule,
-  ],
+  styleUrls: ['../app.component.css'],
   template: `
     <div class="date-range-selector">
       <mat-form-field appearance="fill">

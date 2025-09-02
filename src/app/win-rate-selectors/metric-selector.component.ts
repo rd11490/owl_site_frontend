@@ -1,25 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
-import { MatOptionModule } from '@angular/material/core';
+import { FormControl } from '@angular/forms';
 
 export type MetricType = 'Win Rate' | 'Pick Rate';
 
 @Component({
   selector: 'metric-selector',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
-    MatOptionModule,
-  ],
+  styleUrls: ['../app.component.css'],
   template: `
     <div class="metric-selector">
       <mat-form-field appearance="fill">
