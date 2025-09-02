@@ -2,7 +2,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom, throwError as observableThrowError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Composition, Player, QueryResponse } from './models';
+import { Composition, Player, QueryResponse, SearchRequest, WinRateData } from './models';
+import { WinRateRequest } from './models/win-rate-request';
 
 @Injectable()
 export class QueryService {
@@ -46,6 +47,20 @@ export class QueryService {
 
   setHeroes(heroes: string[]) {
     this.heroes = heroes;
+  }
+
+  async getWinRates(params: WinRateRequest): Promise<WinRateData[]> {
+    try {
+      const response = await firstValueFrom(
+        this.http
+          .post<WinRateData[]>('/api/queryWinRates', params)
+          .pipe(catchError(this.handleError))
+      );
+      return response;
+    } catch (error) {
+      console.error('Error fetching win rates:', error);
+      return [];
+    }
   }
 
   setPlayers(players: Player[]) {

@@ -2,12 +2,13 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 // Material Modules
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -15,7 +16,19 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
 
 // Third Party Modules
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -27,6 +40,8 @@ import { ChartPageComponent } from './chart-page.component';
 import { HomeComponent } from './home.component';
 import { NavigationComponent } from './navigation.component';
 import { PlotComponent } from './plot.component';
+import { WinRatesPageComponent } from './win-rates-page.component';
+import { WinRateSelectorsModule } from './win-rate-selectors/win-rate-selectors.module';
 
 // Query Option Components
 import { SelectorComponent } from './query-options/selector.component';
@@ -79,6 +94,7 @@ import { CircuitPointService } from './circuitPoint.service';
     SelectYStatComponent,
     SelectYStatDenomComponent,
     TimePlayedFilterComponent,
+    WinRatesPageComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -86,18 +102,26 @@ import { CircuitPointService } from './circuitPoint.service';
     BrowserModule,
     CommonModule,
     HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+    WinRateSelectorsModule,
     MatExpansionModule,
     MatPaginatorModule,
+    MatProgressSpinnerModule,
     MatSortModule,
     MatTableModule,
     MatTabsModule,
-    NgSelectModule,
     MatFormFieldModule,
     MatIconModule,
-    FormsModule,
     MatInputModule,
     MatGridListModule,
+    MatSelectModule,
+    MatOptionModule,
     DragDropModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatButtonToggleModule,
+    NgSelectModule,
   ],
   providers: [SetupService, QueryService, ChartService, CircuitPointService],
   bootstrap: [AppComponent],

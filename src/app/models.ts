@@ -39,6 +39,31 @@ export interface SearchRequest {
   teams?: string[];
 }
 
+export interface WinRateDataPoint {
+  winRate: number;
+  pickRate: number;
+  date: string;
+}
+
+export interface WinRateData {
+  hero: string;
+  map: string;
+  rank: string;
+  region: string;
+  data: WinRateDataPoint[];
+}
+
+export interface WinRateRequest {
+  dateRange: {
+    min: string;
+    max: string;
+  };
+  region?: string[];
+  map?: string[];
+  hero?: string[];
+  rank?: string[];
+}
+
 export class SetupResponse {
   comps: Composition[] = [];
   heroes: string[] = [];

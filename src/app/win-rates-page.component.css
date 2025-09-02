@@ -1,0 +1,71 @@
+.win-rates-container {
+  padding: 20px;
+}
+
+.filters {
+  margin: 20px 0;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-group label {
+  font-weight: 500;
+  color: #333;
+}
+
+.content {
+  margin-top: 20px;
+}
+
+.date-range-group {
+  flex-basis: 100%;
+  margin-bottom: 8px;
+}
+
+.plot-container {
+  margin-bottom: 20px;
+  min-height: 400px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  position: relative;
+}
+
+.plot-container.loading {
+  opacity: 0.7;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 1;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  margin: 20px 0;
+}
+
+.error-message {
+  padding: 16px;
+  margin-bottom: 16px;
+  background-color: #fee;
+  color: #c00;
+  border-radius: 4px;
+  border: 1px solid #fcc;
+}

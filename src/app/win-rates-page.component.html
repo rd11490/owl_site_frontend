@@ -1,0 +1,52 @@
+<div class="win-rates-container">
+  <h1>Ranked Win Rates Over Time</h1>
+  
+  <div class="filters">
+    <div class="filter-row">
+      <div class="filter-group">
+        <rank-selector [selectedRanks]="selectedRanks" (ranksChange)="onRanksChange($event)"></rank-selector>
+      </div>
+      <div class="filter-group">
+        <region-selector [selectedRegions]="selectedRegions" (regionsChange)="onRegionsChange($event)"></region-selector>
+      </div>
+      <div class="filter-group">
+        <map-selector [selectedMaps]="selectedMaps" (mapsChange)="onMapsChange($event)"></map-selector>
+      </div>
+    </div>
+    
+    <div class="filter-row">
+      <div class="filter-group">
+        <hero-selector [selectedHeroes]="selectedHeroes" (heroesChange)="onHeroesChange($event)"></hero-selector>
+      </div>
+      <div class="filter-group">
+        <date-range-selector [initialRange]="initialDateRange" (dateRangeChange)="onDateRangeChange($event)"></date-range-selector>
+      </div>
+      <div class="filter-group">
+        <metric-selector [selectedMetric]="selectedMetric" (metricChange)="onMetricChange($event)"></metric-selector>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div *ngIf="error$ | async as error" class="error-message">
+      {{error}}
+    </div>
+
+    <div class="plot-container" [class.loading]="loading$ | async">
+      <win-rate-plot 
+        *ngIf="!(loading$ | async) && winRates.length > 0"
+        [data]="winRates"
+        [metric]="selectedMetric">
+      </win-rate-plot>
+      
+      <div class="loading-overlay" *ngIf="loading$ | async">
+        <mat-spinner diameter="40"></mat-spinner>
+        <span>Loading win rates...</span>
+      </div>
+      
+      <div *ngIf="!(loading$ | async) && winRates.length === 0" class="no-data">
+        No data available for the selected filters.
+      </div>
+    </div>
+  </div>
+</div>
