@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatDateRangePicker } from '@angular/material/datepicker';
 
 interface DateRange {
   min: string;
@@ -9,12 +10,13 @@ interface DateRange {
 @Component({
   selector: 'date-range-selector',
   templateUrl: './date-range-selector.component.html',
-  styleUrls: ['./date-range-selector.component.css'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./date-range-selector.component.css']
 })
 export class DateRangeSelectorComponent implements OnInit {
   @Input() initialRange?: DateRange;
   @Output() dateRangeChange = new EventEmitter<DateRange>();
+  @ViewChild('picker') picker!: MatDateRangePicker<Date>;
+  @ViewChild('datePickerContainer') datePickerContainer!: ElementRef;
 
   dateRange = new FormGroup({
     start: new FormControl<Date | null>(null),
@@ -68,5 +70,20 @@ export class DateRangeSelectorComponent implements OnInit {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const datepickerContent = document.querySelector('.mat-datepicker-content');
+    const dateInput = document.querySelector('.date-range-selector mat-form-field');
+    
+    // Check if click is outside of both the datepicker and the input
+    if (datepickerContent && 
+        !datepickerContent.contains(target) && 
+        dateInput && 
+        !dateInput.contains(target)) {
+      this.picker.close();
+    }
   }
 }
