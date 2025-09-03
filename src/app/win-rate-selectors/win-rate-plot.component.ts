@@ -247,82 +247,116 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
     uniqueLabels: Map<string, string>,
     plotTitle: string 
   } {
-    // Split all keys into their components and normalize them
-    const keys = Array.from(data.keys());
-    console.log('Original keys:', keys);
+    // Get the original WinRateData array from this._data
+    const entries = this._data;
+    console.log('Processing entries:', entries);
     
-    // Parse the keys into structured components
-    const parsedKeys = keys.map(key => {
-      const [hero, maps, rank, region] = key.split('-all-maps-').map(part => part.trim());
-      return {
-        original: key,
-        hero,
-        maps: 'all-maps',
-        rank: rank?.split('-')[0], // Remove region from rank
-        region: region || rank?.split('-')[1] // Get region either from split or from rank
-      };
-    });
-    console.log('Parsed keys:', parsedKeys);
-
-    // Find common elements
+    // Find common elements by checking if all entries have the same value
     const commonElements: string[] = [];
     
-    // Check hero
-    if (parsedKeys.every(k => k.hero === parsedKeys[0].hero)) {
-      commonElements.push(parsedKeys[0].hero);
-    }
+    // Define the string properties we want to check
+    type StringProperties = 'hero' | 'map' | 'rank' | 'region';
+    const propertiesToCheck: StringProperties[] = ['hero', 'map', 'rank', 'region'];
     
-    // Check maps
-    if (parsedKeys.every(k => k.maps === parsedKeys[0].maps)) {
-      commonElements.push('All Maps');
-    }
-    
-    // Check region
-    if (parsedKeys.every(k => k.region === parsedKeys[0].region)) {
-      commonElements.push(parsedKeys[0].region);
-    }
-    
-    console.log('Common elements:', commonElements);
-
-    // Create unique labels (just the rank in this case)
-    const uniqueLabels = new Map<string, string>();
-    parsedKeys.forEach(parsed => {
-      if (parsed.rank) {
-        uniqueLabels.set(parsed.original, parsed.rank);
-      } else {
-        uniqueLabels.set(parsed.original, parsed.original);
-      }
-    });
-    console.log('Unique labels:', Object.fromEntries(uniqueLabels));
-
-    // Create plot title - filter out empty elements and clean up separators
-    const titleElements = [...commonElements, this._metric]
-      .filter(element => element && element.trim() !== '')  // Remove empty elements
-      .map(element => element.trim())                       // Trim whitespace
-      .filter((element, index, array) =>                    // Remove duplicates
-        array.indexOf(element) === index
-      );
-    
-    const plotTitle = titleElements
-      .join(' - ')
-      .replace(/\s*-\s*-\s*/g, ' - ')   // Replace multiple separators with single
-      .trim();
-    
-    console.log('Plot title:', plotTitle);
-
-    return { 
-      commonElements, 
-      uniqueLabels, 
-      plotTitle 
+    // Helper to check if a property is common across all entries
+    const isCommon = (prop: StringProperties): boolean => {
+      if (entries.length === 0) return false;
+      const firstValue = entries[0][prop];
+      return entries.every(entry => entry[prop] === firstValue);
     };
 
-    return { commonElements, uniqueLabels, plotTitle };
+    // Check each property and add to common elements if it's common
+    propertiesToCheck.forEach(prop => {
+      if (isCommon(prop)) {
+        commonElements.push(entries[0][prop]);
+      }
+    });
+
+    console.log('Common elements:', commonElements);
+    
+    // Create unique labels for each series
+    const uniqueLabels = new Map<string, string>();
+    const keys = Array.from(data.keys());
+    
+    entries.forEach((entry, index) => {
+      const labelParts: string[] = [];
+      
+      // Check each property and add to label if it's not common
+      propertiesToCheck.forEach(prop => {
+        if (!commonElements.includes(entry[prop])) {
+          labelParts.push(entry[prop]);
+        }
+      });
+      
+      uniqueLabels.set(keys[index], labelParts.join(' - '));
+    });
+
+    // Helper to format map names
+    const formatMapName = (mapName: string): string => {
+      if (mapName === 'all-maps') return 'All Maps';
+      // Split by hyphen, capitalize each word, join with space
+      return mapName
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+    };
+
+    // Format common elements for display
+    const formatForDisplay = (element: string, type: StringProperties): string => {
+      switch (type) {
+        case 'map':
+          return formatMapName(element);
+        case 'rank':
+          return element === 'All' ? 'All Ranks' : element;
+        default:
+          return element;
+      }
+    };
+
+    // Format common elements for the title
+    const formattedCommonElements = commonElements.map((element, index) => {
+      // Find which property this element came from by checking the first entry
+      const prop = propertiesToCheck.find(p => entries[0][p] === element);
+      return prop ? formatForDisplay(element, prop) : element;
+    });
+
+    // Create plot title from formatted common elements
+    const plotTitle = [...formattedCommonElements, this._metric]
+      .filter(element => element && element.trim() !== '')
+      .join(' - ')
+      .replace(/\s*-\s*-\s*/g, ' - ')
+      .trim();
+
+    // Create unique labels with proper formatting
+    const formattedUniqueLabels = new Map<string, string>();
+    entries.forEach((entry, index) => {
+      const labelParts: string[] = [];
+      
+      // Check each property and add formatted value to label if it's not common
+      propertiesToCheck.forEach(prop => {
+        if (!commonElements.includes(entry[prop])) {
+          labelParts.push(formatForDisplay(entry[prop], prop));
+        }
+      });
+      
+      formattedUniqueLabels.set(keys[index], labelParts.join(' - '));
+    });
+
+    console.log('Plot title:', plotTitle);
+    console.log('Formatted unique labels:', Object.fromEntries(formattedUniqueLabels));
+    
+    return {
+      commonElements: formattedCommonElements,
+      uniqueLabels: formattedUniqueLabels,
+      plotTitle
+    };
   }
 
   private updatePlot() {
     if (!this._data || !this.scales) return;
 
     const data = this.dataTransform.transformData(this._data, this._metric);
+    console.log('data', data)
     const allDataPoints = Array.from(data.values()).flat();
     if (allDataPoints.length === 0) return;
 
@@ -573,22 +607,26 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
   private updateLegend(data: Map<string, DataPoint[]>, uniqueLabels: Map<string, string>, plotTitle: string) {
     if (!this.scales) return;
 
-    // Get sorted legend items and update their labels to show only ranks
+    // Get legend items and use our unique labels from getCommonElements
     const legendItems = this.scaleService.getLegendItems(data)
       .map(item => {
-        // Parse rank from the original key
-        const rankMatch = item.key.match(/-([^-]+)-Americas$/);
-        const rank = rankMatch ? rankMatch[1] : item.key;
-        console.log(`Converting legend item: ${item.key} -> ${rank}`);
+        // Use the unique label we created in getCommonElements
+        const uniqueLabel = uniqueLabels.get(item.key) || item.key;
         return {
           ...item,
-          key: rank
+          key: uniqueLabel
         };
       })
       .sort((a, b) => {
-        // Custom sort order for ranks
+        // Custom sort order for ranks if they contain rank information
         const rankOrder = ['Grandmaster', 'Master', 'Diamond', 'Platinum', 'Gold', 'Silver', 'Bronze'];
-        return rankOrder.indexOf(a.key) - rankOrder.indexOf(b.key);
+        const aRank = rankOrder.find(rank => a.key.includes(rank));
+        const bRank = rankOrder.find(rank => b.key.includes(rank));
+        if (aRank && bRank) {
+          return rankOrder.indexOf(aRank) - rankOrder.indexOf(bRank);
+        }
+        // If no ranks found, sort alphabetically
+        return a.key.localeCompare(b.key);
       })
       .filter(item => item.key && item.key.trim().length > 0); // Remove any empty labels
     
