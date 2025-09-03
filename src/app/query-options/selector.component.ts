@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { MatExpansionPanel } from '@angular/material/expansion';
 import { QueryService } from '../query.service';
 
 @Component({
@@ -7,6 +8,8 @@ import { QueryService } from '../query.service';
   styleUrls: ['../app.component.css'],
 })
 export class SelectorComponent {
+  @ViewChild(MatExpansionPanel) expansionPanel?: MatExpansionPanel;
+  
   constructor(private queryService: QueryService) {}
 
   selectionText() {

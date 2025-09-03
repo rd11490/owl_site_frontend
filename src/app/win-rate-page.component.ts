@@ -3,7 +3,7 @@ import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { map, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { WinRateService } from './win-rate.service';
 import { WinRateQueryParamsService } from './win-rate-query-params.service';
-import { WinRateData } from './models';
+import { WinRateData, WinRateRequest } from './models';
 import { MetricType } from './win-rate-selectors/metric-selector.component';
 
 @Component({
@@ -127,13 +127,15 @@ export class WinRatePageComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
         map(([rank, region, map, hero, startDate, endDate]) => ({
-          rank,
-          region,
-          map,
-          hero,
-          startDate: startDate?.toISOString(),
-          endDate: endDate?.toISOString(),
-        })),
+          dateRange: {
+            min: startDate?.toISOString() || new Date().toISOString(),
+            max: endDate?.toISOString() || new Date().toISOString(),
+          },
+          rank: rank ? [rank] : undefined,
+          region: region ? [region] : undefined,
+          map: map ? [map] : undefined,
+          hero: hero ? [hero] : undefined
+        } as WinRateRequest)),
       )
       .subscribe((params) => {
         this.fetchData(params);
@@ -146,33 +148,86 @@ export class WinRatePageComponent implements OnInit, OnDestroy {
   }
 
   onRankChange(rank: string) {
-    this.queryParamsService.updateParams({ rank });
+    this.queryParamsService.updateUrlParams({
+      dateRange: this.getDateRange(),
+      rank: rank ? [rank] : undefined,
+      region: this.getArrayParam(this.region$.value),
+      map: this.getArrayParam(this.map$.value),
+      hero: this.getArrayParam(this.hero$.value),
+      metric: this.metric$.value
+    });
   }
 
   onRegionChange(region: string) {
-    this.queryParamsService.updateParams({ region });
+    this.queryParamsService.updateUrlParams({
+      dateRange: this.getDateRange(),
+      rank: this.getArrayParam(this.rank$.value),
+      region: region ? [region] : undefined,
+      map: this.getArrayParam(this.map$.value),
+      hero: this.getArrayParam(this.hero$.value),
+      metric: this.metric$.value
+    });
   }
 
   onMapChange(map: string) {
-    this.queryParamsService.updateParams({ map });
+    this.queryParamsService.updateUrlParams({
+      dateRange: this.getDateRange(),
+      rank: this.getArrayParam(this.rank$.value),
+      region: this.getArrayParam(this.region$.value),
+      map: map ? [map] : undefined,
+      hero: this.getArrayParam(this.hero$.value),
+      metric: this.metric$.value
+    });
   }
 
   onHeroChange(hero: string) {
-    this.queryParamsService.updateParams({ hero });
+    this.queryParamsService.updateUrlParams({
+      dateRange: this.getDateRange(),
+      rank: this.getArrayParam(this.rank$.value),
+      region: this.getArrayParam(this.region$.value),
+      map: this.getArrayParam(this.map$.value),
+      hero: hero ? [hero] : undefined,
+      metric: this.metric$.value
+    });
   }
 
   onDateRangeChange({ startDate, endDate }: { startDate: Date; endDate: Date }) {
-    this.queryParamsService.updateParams({
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
+    this.queryParamsService.updateUrlParams({
+      dateRange: {
+        min: startDate.toISOString(),
+        max: endDate.toISOString()
+      },
+      rank: this.getArrayParam(this.rank$.value),
+      region: this.getArrayParam(this.region$.value),
+      map: this.getArrayParam(this.map$.value),
+      hero: this.getArrayParam(this.hero$.value),
+      metric: this.metric$.value
     });
   }
 
   onMetricChange(metric: MetricType) {
-    this.queryParamsService.updateParams({ metric });
+    this.queryParamsService.updateUrlParams({
+      dateRange: this.getDateRange(),
+      rank: this.getArrayParam(this.rank$.value),
+      region: this.getArrayParam(this.region$.value),
+      map: this.getArrayParam(this.map$.value),
+      hero: this.getArrayParam(this.hero$.value),
+      metric
+    });
   }
 
-  private fetchData(params: any) {
+  private getDateRange() {
+    return {
+      min: this.startDate$.value?.toISOString() || new Date().toISOString(),
+      max: this.endDate$.value?.toISOString() || new Date().toISOString()
+    };
+  }
+
+  private getArrayParam(value: string | null): string[] | undefined {
+    return value ? [value] : undefined;
+  }
+
+  private async fetchData(params: WinRateRequest) {
     if (!this.isValidParams(params)) {
       return;
     }
@@ -180,20 +235,15 @@ export class WinRatePageComponent implements OnInit, OnDestroy {
     this.loading$.next(true);
     this.error$.next(null);
 
-    this.winRateService
-      .getWinRates(params)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (data) => {
-          this.data$.next(data);
-          this.loading$.next(false);
-        },
-        error: (error) => {
-          console.error('Error fetching win rates:', error);
-          this.error$.next('Failed to load win rate data. Please try again.');
-          this.loading$.next(false);
-        },
-      });
+    try {
+      const data = await this.winRateService.getWinRates(params);
+      this.data$.next(data);
+    } catch (error) {
+      console.error('Error fetching win rates:', error);
+      this.error$.next('Failed to load win rate data. Please try again.');
+    } finally {
+      this.loading$.next(false);
+    }
   }
 
   private isValidParams(params: any): boolean {

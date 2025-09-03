@@ -1,6 +1,6 @@
 <mat-expansion-panel class='mat-modified'>
   <mat-expansion-panel-header>
-    <mat-panel-description>
+    <mat-panel-description *ngIf="!expansionPanel?.expanded">
       <span style="width: 100%;text-align: center">{{selectionText()}}</span>
     </mat-panel-description>
   </mat-expansion-panel-header>
