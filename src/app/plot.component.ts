@@ -1,6 +1,5 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import * as d3 from 'd3';
-import { Selection } from 'd3-selection';
 import { DataPointForPlot, PlotData } from './models';
 
 interface Scales {
@@ -25,12 +24,12 @@ export class PlotComponent implements OnInit, OnDestroy {
   private readonly minDotSize = 5;
   private readonly maxDotSize = 25;
   private readonly margin = { top: 0, right: 0, bottom: 100, left: 100 };
-  
+
   // Scales for the chart
   private scales: Scales = {
     xScale: d3.scaleLinear(),
     yScale: d3.scaleLinear(),
-    radiusScale: d3.scaleLinear()
+    radiusScale: d3.scaleLinear(),
   };
 
   private _data: PlotData = {
@@ -39,7 +38,7 @@ export class PlotComponent implements OnInit, OnDestroy {
     yLabel: 'No Data',
   };
 
-  @Input() 
+  @Input()
   set data(value: PlotData | undefined) {
     if (value) {
       this._data = value;
@@ -70,7 +69,8 @@ export class PlotComponent implements OnInit, OnDestroy {
   }
 
   private initTooltip() {
-    this.tooltip = d3.select('body')
+    this.tooltip = d3
+      .select('body')
       .append('div')
       .attr('class', 'tooltip')
       .style('opacity', 0)
@@ -94,16 +94,19 @@ export class PlotComponent implements OnInit, OnDestroy {
     const existingSvg = d3.select<SVGSVGElement, unknown>('svg#plot');
     console.log('Found SVG element:', existingSvg.node());
     existingSvg.selectAll('*').remove();
-    
+
     // Reset SVG attributes first
     existingSvg
       .attr('width', this.width + this.margin.left + this.margin.right)
       .attr('height', this.height + this.margin.top + this.margin.bottom)
-      .attr('viewBox', `0 0 ${this.width + this.margin.left + this.margin.right} ${this.height + this.margin.top + this.margin.bottom}`)
+      .attr(
+        'viewBox',
+        `0 0 ${this.width + this.margin.left + this.margin.right} ${this.height + this.margin.top + this.margin.bottom}`,
+      )
       .style('background-color', '#ffffff') // Add background for visibility
       .style('overflow', 'visible') // Make sure elements outside the SVG are visible
       .style('cursor', 'move'); // Add move cursor to indicate draggable
-      
+
     // Add a background rect to catch zoom events
     existingSvg
       .append('rect')
@@ -112,32 +115,31 @@ export class PlotComponent implements OnInit, OnDestroy {
       .attr('height', this.height + this.margin.top + this.margin.bottom)
       .attr('fill', 'none')
       .style('pointer-events', 'all');
-    
+
     // Create new base SVG element with correct positioning
     this.svg = existingSvg
       .append('g')
       .attr('class', 'main-group')
       .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
-    
+
     // Create a view group for elements that should be clipped
-    const view = this.svg.append('g')
-      .attr('class', 'view');
-    
+    const view = this.svg.append('g').attr('class', 'view');
+
     // Add a clip path for the view
-    view.append('defs').append('clipPath')
+    view
+      .append('defs')
+      .append('clipPath')
       .attr('id', 'view-clip')
       .append('rect')
       .attr('width', this.width - this.margin.left - this.margin.right)
       .attr('height', this.height - this.margin.top - this.margin.bottom);
-    
+
     // Create the scatter group inside the view
-    this.scatter = view.append('g')
-      .attr('class', 'scatter-plot')
-      .attr('clip-path', 'url(#view-clip)');
-      
+    this.scatter = view.append('g').attr('class', 'scatter-plot').attr('clip-path', 'url(#view-clip)');
+
     console.log('SVG initialized with dimensions:', {
       width: this.width + this.margin.left + this.margin.right,
-      height: this.height + this.margin.top + this.margin.bottom
+      height: this.height + this.margin.top + this.margin.bottom,
     });
     console.log('Scatter plot group:', this.scatter.node());
   }
@@ -150,9 +152,9 @@ export class PlotComponent implements OnInit, OnDestroy {
 
   private createScales(data: DataPointForPlot[]) {
     // Use d3.extent for more efficient min/max calculation
-    const xExtent = d3.extent(data, d => d.x) as [number, number];
-    const yExtent = d3.extent(data, d => d.y) as [number, number];
-    const sizeExtent = d3.extent(data, d => d.size) as [number, number];
+    const xExtent = d3.extent(data, (d) => d.x) as [number, number];
+    const yExtent = d3.extent(data, (d) => d.y) as [number, number];
+    const sizeExtent = d3.extent(data, (d) => d.size) as [number, number];
 
     // Calculate padding
     const xRange = xExtent[1] - xExtent[0];
@@ -161,17 +163,17 @@ export class PlotComponent implements OnInit, OnDestroy {
     const yPadding = yRange * 0.2;
 
     // Create scales
-    const xScale = d3.scaleLinear()
+    const xScale = d3
+      .scaleLinear()
       .domain([xExtent[0] - xPadding, xExtent[1] + xPadding])
       .range([0, this.width - this.margin.left - this.margin.right]);
 
-    const yScale = d3.scaleLinear()
+    const yScale = d3
+      .scaleLinear()
       .domain([yExtent[0] - yPadding, yExtent[1] + yPadding])
       .range([this.height - this.margin.top - this.margin.bottom, 0]);
 
-    const radiusScale = d3.scaleLinear()
-      .domain(sizeExtent)
-      .range([this.minDotSize, this.maxDotSize]);
+    const radiusScale = d3.scaleLinear().domain(sizeExtent).range([this.minDotSize, this.maxDotSize]);
 
     return { xScale, yScale, radiusScale };
   }
@@ -184,34 +186,37 @@ export class PlotComponent implements OnInit, OnDestroy {
 
     // Update the component's scales
     this.scales = this.createScales(this._data.data);
-    
+
     console.log('Scale ranges:', {
       x: [0, this.width - this.margin.left - this.margin.right],
-      y: [this.height - this.margin.top - this.margin.bottom, 0]
+      y: [this.height - this.margin.top - this.margin.bottom, 0],
     });
 
     const xAxis = d3.axisBottom(this.scales.xScale);
     const yAxis = d3.axisLeft(this.scales.yScale);
 
     // Setup zoom behavior
-    const zoom = d3.zoom<SVGSVGElement, unknown>()
-      .extent([[0, 0], [this.width, this.height]])
+    const zoom = d3
+      .zoom<SVGSVGElement, unknown>()
+      .extent([
+        [0, 0],
+        [this.width, this.height],
+      ])
       .on('zoom', (event) => {
         // Rescale the axes using d3-zoom's built-in transform scaling
         const newXScale = event.transform.rescaleX(this.scales.xScale);
         const newYScale = event.transform.rescaleY(this.scales.yScale);
-        
+
         // Update axes with new scales
         this.svg.select<SVGGElement>('.x-axis').call(d3.axisBottom(newXScale) as any);
         this.svg.select<SVGGElement>('.y-axis').call(d3.axisLeft(newYScale) as any);
-        
+
         // Update point groups
-        this.scatter.selectAll<SVGGElement, DataPointForPlot>('g.point')
-          .attr('transform', d => {
-            const x = newXScale(d.x);
-            const y = newYScale(d.y);
-            return `translate(${x},${y})`;
-          });
+        this.scatter.selectAll<SVGGElement, DataPointForPlot>('g.point').attr('transform', (d) => {
+          const x = newXScale(d.x);
+          const y = newYScale(d.y);
+          return `translate(${x},${y})`;
+        });
       });
 
     // Add zoom to the SVG
@@ -270,9 +275,7 @@ export class PlotComponent implements OnInit, OnDestroy {
 
     console.log('Creating plot group');
     // Create a specific group for the dots with a class for debugging
-    const group = this.scatter.append('g')
-      .attr('class', 'dots-group')
-      .attr('transform', `translate(0,0)`);
+    const group = this.scatter.append('g').attr('class', 'dots-group').attr('transform', `translate(0,0)`);
     console.log('Plot group created:', group.node());
 
     // Add dots with more explicit data binding
@@ -290,7 +293,8 @@ export class PlotComponent implements OnInit, OnDestroy {
       });
 
     // Add circles
-    points.append('circle')
+    points
+      .append('circle')
       .attr('class', 'dot')
       .attr('r', (row: DataPointForPlot) => {
         const r = this.scales.radiusScale(row.size);
@@ -303,7 +307,8 @@ export class PlotComponent implements OnInit, OnDestroy {
       .attr('stroke-width', '1');
 
     // Add labels
-    points.append('text')
+    points
+      .append('text')
       .attr('class', 'point-label')
       .attr('text-anchor', 'middle')
       .attr('y', (d: DataPointForPlot) => {
@@ -322,16 +327,16 @@ export class PlotComponent implements OnInit, OnDestroy {
           .select('circle')
           .attr('stroke-width', '2')
           .attr('opacity', '1');
-          
+
         const e = event as unknown as MouseEvent;
+        this.tooltip.transition().duration(200).style('opacity', 1);
+
         this.tooltip
-          .transition()
-          .duration(200)
-          .style('opacity', 1);
-          
-        this.tooltip
-          .html(d.label + (d.labelAdditional ? `<br/>${d.labelAdditional}` : '') + 
-                `<br/>${d.xLabel}: ${d.x.toFixed(2)}<br/>${d.yLabel}: ${d.y.toFixed(2)}<br/>${d.sizeLabel}: ${d.size.toFixed(2)}`)
+          .html(
+            d.label +
+              (d.labelAdditional ? `<br/>${d.labelAdditional}` : '') +
+              `<br/>${d.xLabel}: ${d.x.toFixed(2)}<br/>${d.yLabel}: ${d.y.toFixed(2)}<br/>${d.sizeLabel}: ${d.size.toFixed(2)}`,
+          )
           .style('left', `${e.pageX + 10}px`)
           .style('top', `${e.pageY - 10}px`);
       })
@@ -341,11 +346,8 @@ export class PlotComponent implements OnInit, OnDestroy {
           .select('circle')
           .attr('stroke-width', '1')
           .attr('opacity', '0.7');
-          
-        this.tooltip
-          .transition()
-          .duration(500)
-          .style('opacity', 0);
+
+        this.tooltip.transition().duration(500).style('opacity', 0);
       });
   }
 }

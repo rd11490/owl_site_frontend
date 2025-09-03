@@ -3,17 +3,17 @@ import * as d3 from 'd3';
 import { DataPoint } from '../models/plot.models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class D3UtilsService {
-  
   /**
    * Creates a line generator for D3 line charts
    */
   createLineGenerator(xScale: d3.ScaleTime<number, number>, yScale: d3.ScaleLinear<number, number>) {
-    return d3.line<DataPoint>()
-      .x(d => xScale(d.date))
-      .y(d => yScale(d.value));
+    return d3
+      .line<DataPoint>()
+      .x((d) => xScale(d.date))
+      .y((d) => yScale(d.value));
   }
 
   /**

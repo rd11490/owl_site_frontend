@@ -4,12 +4,12 @@ import { MetricType } from './win-rate-selectors/metric-selector.component';
 import { WinRateRequest } from './models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WinRateQueryParamsService {
   constructor(
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {}
 
   /**
@@ -23,22 +23,17 @@ export class WinRateQueryParamsService {
       ranks: params.rank?.join(','),
       maps: params.map?.join(','),
       heroes: params.hero?.join(','),
-      metric: params.metric
+      metric: params.metric,
     };
 
     // Remove undefined values
-    Object.keys(queryParams).forEach(key => 
-      queryParams[key] === undefined && delete queryParams[key]
-    );
+    Object.keys(queryParams).forEach((key) => queryParams[key] === undefined && delete queryParams[key]);
 
-    this.router.navigate(
-      [], 
-      {
-        relativeTo: this.route,
-        queryParams,
-        queryParamsHandling: 'merge'
-      }
-    );
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      queryParamsHandling: 'merge',
+    });
   }
 
   /**
@@ -50,13 +45,13 @@ export class WinRateQueryParamsService {
     return {
       dateRange: {
         min: params['startDate'] || defaultDateRange.min,
-        max: params['endDate'] || defaultDateRange.max
+        max: params['endDate'] || defaultDateRange.max,
       },
       region: params['regions']?.split(',').filter(Boolean),
       rank: params['ranks']?.split(',').filter(Boolean),
       map: params['maps']?.split(',').filter(Boolean),
       hero: params['heroes']?.split(',').filter(Boolean),
-      metric: (params['metric'] as MetricType) || 'Win Rate'
+      metric: (params['metric'] as MetricType) || 'Win Rate',
     };
   }
 
@@ -64,10 +59,10 @@ export class WinRateQueryParamsService {
     const end = new Date();
     const start = new Date();
     start.setDate(start.getDate() - 30);
-    
+
     return {
       min: start.toISOString().split('T')[0],
-      max: end.toISOString().split('T')[0]
+      max: end.toISOString().split('T')[0],
     };
   }
 }

@@ -25,7 +25,7 @@ export class PlotComponent implements OnInit {
     yLabel: 'No Data',
   };
 
-  @Input() 
+  @Input()
   set data(value: PlotData | undefined) {
     if (value) {
       this._data = value;
@@ -40,7 +40,8 @@ export class PlotComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    this.tooltip = d3.select('body')
+    this.tooltip = d3
+      .select('body')
       .append('div')
       .attr('class', 'tooltip')
       .style('opacity', 0)
@@ -192,8 +193,11 @@ export class PlotComponent implements OnInit {
       .on('mouseover', (event: PointerEvent, row: DataPointForPlot) => {
         this.tooltip.transition().duration(200).style('opacity', 0.9);
         this.tooltip
-          .html(row.label + (row.labelAdditional ? `<br/>${row.labelAdditional}` : '') + 
-                `<br/>X: ${row.xLabel}<br/>Y: ${row.yLabel}<br/>Size: ${row.sizeLabel}`)
+          .html(
+            row.label +
+              (row.labelAdditional ? `<br/>${row.labelAdditional}` : '') +
+              `<br/>X: ${row.xLabel}<br/>Y: ${row.yLabel}<br/>Size: ${row.sizeLabel}`,
+          )
           .style('left', `${event.pageX}px`)
           .style('top', `${event.pageY}px`);
       })

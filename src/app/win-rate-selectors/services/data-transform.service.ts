@@ -4,27 +4,26 @@ import { WinRateData } from '../../models';
 import { MetricType } from '../metric-selector.component';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DataTransformService {
-
   transformData(data: WinRateData[], metric: MetricType): Map<string, DataPoint[]> {
     const transformedData = new Map<string, DataPoint[]>();
 
-    data.forEach(series => {
+    data.forEach((series) => {
       const key = this.getSeriesKey(series);
       const points = series.data
         .map((point: RawDataPoint) => {
           // Parse the YYYY-MM-DD date string
           const [year, month, day] = point.date.split('-').map(Number);
-          const date = new Date(year, month - 1, day);  // month is 0-based
+          const date = new Date(year, month - 1, day); // month is 0-based
           return {
             date,
             value: metric === 'Win Rate' ? point.winRate : point.pickRate,
             hero: series.hero,
             map: series.map,
             rank: series.rank,
-            region: series.region
+            region: series.region,
           };
         })
         .sort((a: DataPoint, b: DataPoint) => a.date.getTime() - b.date.getTime());
@@ -42,14 +41,14 @@ export class DataTransformService {
   getDisplayLabel(point: DataPoint, allPoints: DataPoint[], colorCategory: 'hero' | 'map' | 'rank' | 'region'): string {
     // Find which values are common across all series
     const commonValues = {
-      hero: allPoints.every(p => p.hero === point.hero),
-      rank: allPoints.every(p => p.rank === point.rank),
-      map: allPoints.every(p => p.map === point.map),
-      region: allPoints.every(p => p.region === point.region)
+      hero: allPoints.every((p) => p.hero === point.hero),
+      rank: allPoints.every((p) => p.rank === point.rank),
+      map: allPoints.every((p) => p.map === point.map),
+      region: allPoints.every((p) => p.region === point.region),
     };
 
     const components: string[] = [];
-    
+
     // Always add the category we're using for colors first, if it's not 'All'
     const colorValue = point[colorCategory];
     if (colorValue !== 'All') {
@@ -85,10 +84,10 @@ export class DataTransformService {
   findNearestPoint(mouseX: number, points: DataPoint[], xScale: d3.ScaleTime<number, number>): DataPoint {
     // Convert mouse position to date
     const mouseDate = xScale.invert(mouseX).getTime();
-    
+
     // Sort points by date if not already sorted
     const sortedPoints = [...points].sort((a, b) => a.date.getTime() - b.date.getTime());
-    
+
     // Find the last point that is to the left of the mouse
     for (let i = sortedPoints.length - 1; i >= 0; i--) {
       const currentPoint = sortedPoints[i];
@@ -96,7 +95,7 @@ export class DataTransformService {
         return currentPoint;
       }
     }
-    
+
     // If we're before the first point, return the first point
     return sortedPoints[0];
   }

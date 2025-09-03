@@ -20,21 +20,18 @@ import { MetricType } from './win-rate-selectors/metric-selector.component';
           <hero-selector [hero]="hero$ | async" (heroChange)="onHeroChange($event)"></hero-selector>
         </div>
         <div class="selector-row">
-          <date-range-selector 
-            [startDate]="startDate$ | async" 
+          <date-range-selector
+            [startDate]="startDate$ | async"
             [endDate]="endDate$ | async"
-            (dateRangeChange)="onDateRangeChange($event)">
+            (dateRangeChange)="onDateRangeChange($event)"
+          >
           </date-range-selector>
           <metric-selector [metric]="metric$ | async" (metricChange)="onMetricChange($event)"></metric-selector>
         </div>
       </div>
 
       <div class="plot-container" [class.loading]="loading$ | async">
-        <win-rate-plot 
-          *ngIf="!(loading$ | async)"
-          [data]="data$ | async"
-          [metric]="metric$ | async">
-        </win-rate-plot>
+        <win-rate-plot *ngIf="!(loading$ | async)" [data]="data$ | async" [metric]="metric$ | async"> </win-rate-plot>
         <mat-spinner *ngIf="loading$ | async"></mat-spinner>
       </div>
 
@@ -43,50 +40,52 @@ import { MetricType } from './win-rate-selectors/metric-selector.component';
       </div>
     </div>
   `,
-  styles: [`
-    .win-rate-page {
-      padding: 20px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+  styles: [
+    `
+      .win-rate-page {
+        padding: 20px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
 
-    .selectors-container {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+      .selectors-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
 
-    .selector-row {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
+      .selector-row {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
 
-    .plot-container {
-      flex: 1;
-      min-height: 850px;
-      position: relative;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      background: white;
-    }
+      .plot-container {
+        flex: 1;
+        min-height: 850px;
+        position: relative;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: white;
+      }
 
-    .plot-container.loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+      .plot-container.loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-    .error-message {
-      color: #d32f2f;
-      padding: 16px;
-      border-radius: 4px;
-      background-color: #fde7e7;
-      margin-top: 16px;
-    }
-  `]
+      .error-message {
+        color: #d32f2f;
+        padding: 16px;
+        border-radius: 4px;
+        background-color: #fde7e7;
+        margin-top: 16px;
+      }
+    `,
+  ],
 })
 export class WinRatePageComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
@@ -107,32 +106,23 @@ export class WinRatePageComponent implements OnInit, OnDestroy {
 
   constructor(
     private winRateService: WinRateService,
-    private queryParamsService: WinRateQueryParamsService
+    private queryParamsService: WinRateQueryParamsService,
   ) {}
 
   ngOnInit() {
     // Subscribe to query parameter changes
-    this.queryParamsService.queryParams$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(params => {
-        this.rank$.next(params.rank || '');
-        this.region$.next(params.region || '');
-        this.map$.next(params.map || '');
-        this.hero$.next(params.hero || '');
-        this.startDate$.next(params.startDate ? new Date(params.startDate) : null);
-        this.endDate$.next(params.endDate ? new Date(params.endDate) : null);
-        this.metric$.next(params.metric || 'Win Rate');
-      });
+    this.queryParamsService.queryParams$.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.rank$.next(params.rank || '');
+      this.region$.next(params.region || '');
+      this.map$.next(params.map || '');
+      this.hero$.next(params.hero || '');
+      this.startDate$.next(params.startDate ? new Date(params.startDate) : null);
+      this.endDate$.next(params.endDate ? new Date(params.endDate) : null);
+      this.metric$.next(params.metric || 'Win Rate');
+    });
 
     // Subscribe to selector changes to trigger data fetch
-    combineLatest([
-      this.rank$,
-      this.region$,
-      this.map$,
-      this.hero$,
-      this.startDate$,
-      this.endDate$
-    ])
+    combineLatest([this.rank$, this.region$, this.map$, this.hero$, this.startDate$, this.endDate$])
       .pipe(
         takeUntil(this.destroy$),
         distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
@@ -142,10 +132,10 @@ export class WinRatePageComponent implements OnInit, OnDestroy {
           map,
           hero,
           startDate: startDate?.toISOString(),
-          endDate: endDate?.toISOString()
-        }))
+          endDate: endDate?.toISOString(),
+        })),
       )
-      .subscribe(params => {
+      .subscribe((params) => {
         this.fetchData(params);
       });
   }
@@ -174,7 +164,7 @@ export class WinRatePageComponent implements OnInit, OnDestroy {
   onDateRangeChange({ startDate, endDate }: { startDate: Date; endDate: Date }) {
     this.queryParamsService.updateParams({
       startDate: startDate.toISOString(),
-      endDate: endDate.toISOString()
+      endDate: endDate.toISOString(),
     });
   }
 
@@ -190,7 +180,8 @@ export class WinRatePageComponent implements OnInit, OnDestroy {
     this.loading$.next(true);
     this.error$.next(null);
 
-    this.winRateService.getWinRates(params)
+    this.winRateService
+      .getWinRates(params)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
@@ -201,16 +192,11 @@ export class WinRatePageComponent implements OnInit, OnDestroy {
           console.error('Error fetching win rates:', error);
           this.error$.next('Failed to load win rate data. Please try again.');
           this.loading$.next(false);
-        }
+        },
       });
   }
 
   private isValidParams(params: any): boolean {
-    return Boolean(
-      params.rank &&
-      params.region &&
-      params.startDate &&
-      params.endDate
-    );
+    return Boolean(params.rank && params.region && params.startDate && params.endDate);
   }
 }

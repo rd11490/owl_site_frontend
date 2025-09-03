@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { NgSelectComponent } from '@ng-select/ng-select';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'hero-selector',
@@ -16,24 +15,27 @@ import { FormsModule } from '@angular/forms';
         placeholder="Hero"
         [virtualScroll]="true"
         (change)="onHeroChange($event)"
-        [(ngModel)]="selectedHeroes">
+        [(ngModel)]="selectedHeroes"
+      >
       </ng-select>
     </div>
   `,
-  styles: [`
-    .hero-selector {
-      min-width: 200px;
-    }
-    ::ng-deep .ng-select .ng-select-container {
-      min-height: 36px;
-    }
-    ::ng-deep .ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
-      background-color: #e0e0e0;
-      border-radius: 4px;
-      margin: 2px;
-      padding: 2px 8px;
-    }
-  `]
+  styles: [
+    `
+      .hero-selector {
+        min-width: 200px;
+      }
+      ::ng-deep .ng-select .ng-select-container {
+        min-height: 36px;
+      }
+      ::ng-deep .ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
+        background-color: #e0e0e0;
+        border-radius: 4px;
+        margin: 2px;
+        padding: 2px 8px;
+      }
+    `,
+  ],
 })
 export class HeroSelectorComponent {
   @Input() selectedHeroes: string[] = [];
@@ -52,7 +54,7 @@ export class HeroSelectorComponent {
     'Mercy',
     'Moira',
     'Wuyang',
-    'Zenyatta'
+    'Zenyatta',
   ];
 
   readonly tankHeroes = [
@@ -68,7 +70,7 @@ export class HeroSelectorComponent {
     'Sigma',
     'Winston',
     'Wrecking Ball',
-    'Zarya'
+    'Zarya',
   ];
 
   readonly dpsHeroes = [
@@ -90,16 +92,16 @@ export class HeroSelectorComponent {
     'Torbjörn',
     'Tracer',
     'Venture',
-    'Widowmaker'
+    'Widowmaker',
   ];
 
   readonly groupedHeroes = [
-    ...this.supportHeroes.map(hero => ({ id: hero, name: hero, group: 'Support' })),
-    ...this.tankHeroes.map(hero => ({ id: hero, name: hero, group: 'Tank' })),
-    ...this.dpsHeroes.map(hero => ({ id: hero, name: hero, group: 'Damage' }))
+    ...this.supportHeroes.map((hero) => ({ id: hero, name: hero, group: 'Support' })),
+    ...this.tankHeroes.map((hero) => ({ id: hero, name: hero, group: 'Tank' })),
+    ...this.dpsHeroes.map((hero) => ({ id: hero, name: hero, group: 'Damage' })),
   ];
 
   onHeroChange(event: any[]) {
-    this.heroesChange.emit(event?.map(item => item.id) || []);
+    this.heroesChange.emit(event?.map((item) => item.id) || []);
   }
 }

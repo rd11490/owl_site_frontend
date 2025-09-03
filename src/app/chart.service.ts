@@ -100,12 +100,12 @@ export class ChartService {
     }
 
     const data = this.queryService.queryResponseSync.data;
-    
+
     // Count unique values for each category
     const uniqueValues = {
-      player: new Set(data.map(row => row.player).filter(Boolean)).size,
-      hero: new Set(data.map(row => row.hero).filter(Boolean)).size,
-      team: new Set(data.map(row => row.teamName).filter(Boolean)).size
+      player: new Set(data.map((row) => row.player).filter(Boolean)).size,
+      hero: new Set(data.map((row) => row.hero).filter(Boolean)).size,
+      team: new Set(data.map((row) => row.teamName).filter(Boolean)).size,
     };
 
     // Return the category with the most unique values
@@ -120,20 +120,14 @@ export class ChartService {
 
   private getColor(row: QueryResponseRow): string {
     const strategy = this.getColorStrategy();
-    
+
     switch (strategy) {
       case 'player':
-        return row.player ? 
-          getPlayerColor(row.player, this.setupService.constantsSync.players) : 
-          '#000000';
+        return row.player ? getPlayerColor(row.player, this.setupService.constantsSync.players) : '#000000';
       case 'hero':
-        return row.hero ? 
-          getHeroColor(row.hero) : 
-          '#000000';
+        return row.hero ? getHeroColor(row.hero) : '#000000';
       case 'team':
-        return row.teamName ? 
-          getTeamColor(row.teamName) : 
-          '#000000';
+        return row.teamName ? getTeamColor(row.teamName) : '#000000';
     }
   }
 
@@ -154,7 +148,13 @@ export class ChartService {
   }
 
   public buildChartData() {
-    console.log('Building chart data with:', { x: this.x, y: this.y, xDenom: this.xDenom, yDenom: this.yDenom, size: this.size });
+    console.log('Building chart data with:', {
+      x: this.x,
+      y: this.y,
+      xDenom: this.xDenom,
+      yDenom: this.yDenom,
+      size: this.size,
+    });
     if (!this.queryService.queryResponseSync?.data?.length) {
       console.log('No query data available');
       return;

@@ -9,15 +9,14 @@ describe('PlotComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PlotComponent]
-    })
-    .compileComponents();
+      declarations: [PlotComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PlotComponent);
     component = fixture.componentInstance;
-    
+
     // Create SVG element that the component expects
     svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('class', 'plot');
@@ -25,7 +24,7 @@ describe('PlotComponent', () => {
     svg.setAttribute('width', '1200');
     svg.setAttribute('height', '700');
     document.body.appendChild(svg);
-    
+
     fixture.detectChanges();
   });
 
@@ -55,23 +54,23 @@ describe('PlotComponent', () => {
           x: 5,
           xLabel: '5',
           y: 3,
-          yLabel: '3'
-        }
+          yLabel: '3',
+        },
       ],
       xLabel: 'Test X',
-      yLabel: 'Test Y'
+      yLabel: 'Test Y',
     };
 
     // Spy on the plotData method
     const plotDataSpy = spyOn<any>(component, 'plotData');
-    
+
     // Set the data
     component.data = testData;
     fixture.detectChanges();
 
     // Verify the data was set
     expect(component['_data']).toEqual(testData);
-    
+
     // Verify plotData was called
     expect(plotDataSpy).toHaveBeenCalled();
   });
@@ -87,11 +86,11 @@ describe('PlotComponent', () => {
           x: 5,
           xLabel: '5',
           y: 3,
-          yLabel: '3'
-        }
+          yLabel: '3',
+        },
       ],
       xLabel: 'Test X',
-      yLabel: 'Test Y'
+      yLabel: 'Test Y',
     };
 
     // Set the data
@@ -115,7 +114,7 @@ describe('PlotComponent', () => {
   it('should handle undefined data gracefully', () => {
     component.data = undefined;
     fixture.detectChanges();
-    
+
     // Should still have the default data
     expect(component['_data'].data).toEqual([]);
     expect(component['_data'].xLabel).toBe('No Data');
@@ -133,11 +132,11 @@ describe('PlotComponent', () => {
           x: 5,
           xLabel: '5',
           y: 3,
-          yLabel: '3'
-        }
+          yLabel: '3',
+        },
       ],
       xLabel: 'Test X',
-      yLabel: 'Test Y'
+      yLabel: 'Test Y',
     };
 
     // Set initial data

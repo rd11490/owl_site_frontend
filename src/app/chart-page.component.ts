@@ -221,7 +221,7 @@ export class ChartPageComponent {
       this.data = {
         data: [...this.chartService.data.data],
         xLabel: this.chartService.data.xLabel,
-        yLabel: this.chartService.data.yLabel
+        yLabel: this.chartService.data.yLabel,
       };
     }
   }

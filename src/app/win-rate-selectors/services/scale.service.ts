@@ -5,49 +5,48 @@ import { ColorMappingService } from '../../services/color-mapping.service';
 import { DataAnalyzerService } from '../data-analyzer.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ScaleService {
   private scales: Scales | null = null;
 
   constructor(
     private colorMappingService: ColorMappingService,
-    private dataAnalyzerService: DataAnalyzerService
+    private dataAnalyzerService: DataAnalyzerService,
   ) {}
 
   initializeScales(width: number, height: number, data: any[]): Scales {
-    const colorCategory = data.length > 0 ? 
-      this.dataAnalyzerService.determineColorCategory(data) : 'hero';
+    const colorCategory = data.length > 0 ? this.dataAnalyzerService.determineColorCategory(data) : 'hero';
 
     this.scales = {
       xScale: d3.scaleTime().range([0, width]),
       yScale: d3.scaleLinear().range([height, 0]),
       colorScale: (key: string) => this.generateUniqueColor(key),
-      colorCategory: colorCategory
+      colorCategory: colorCategory,
     };
-    
+
     return this.scales;
   }
 
   updateScales(scales: Scales, data: Map<string, DataPoint[]>) {
     // Find min/max dates and values across all series
     const allPoints = Array.from(data.values()).flat();
-    
+
     // Calculate Y domain with 2% padding
-    const yExtent = d3.extent(allPoints, d => d.value) as [number, number];
+    const yExtent = d3.extent(allPoints, (d) => d.value) as [number, number];
     const yRange = yExtent[1] - yExtent[0];
     const yPadding = yRange * 0.02;
     const yMin = Math.max(0, yExtent[0] - yPadding);
     const yMax = Math.min(100, yExtent[1] + yPadding);
-    
-    scales.xScale.domain(d3.extent(allPoints, d => d.date) as [Date, Date]);
+
+    scales.xScale.domain(d3.extent(allPoints, (d) => d.date) as [Date, Date]);
     scales.yScale.domain([yMin, yMax]);
   }
 
   getLegendItems(data: Map<string, DataPoint[]>): { key: string; color: string }[] {
-    const items = Array.from(data.keys()).map(key => ({
+    const items = Array.from(data.keys()).map((key) => ({
       key,
-      color: this.generateUniqueColor(key)
+      color: this.generateUniqueColor(key),
     }));
 
     return this.sortLegendItems(items);
@@ -55,7 +54,7 @@ export class ScaleService {
 
   private sortLegendItems(items: { key: string; color: string }[]): { key: string; color: string }[] {
     const rankOrder = ['grandmaster', 'master', 'diamond', 'platinum', 'gold', 'silver', 'bronze'];
-    
+
     switch (this.scales?.colorCategory) {
       case 'rank':
         return items.sort((a, b) => {
@@ -120,11 +119,13 @@ export class ScaleService {
       case 'region':
         return this.colorMappingService.getRegionColor(region) || '#808080';
       default:
-        return this.colorMappingService.getHeroColor(hero) || 
-               this.colorMappingService.getMapColor(map) || 
-               this.colorMappingService.getRankColor(rank) || 
-               this.colorMappingService.getRegionColor(region) || 
-               '#808080';
+        return (
+          this.colorMappingService.getHeroColor(hero) ||
+          this.colorMappingService.getMapColor(map) ||
+          this.colorMappingService.getRankColor(rank) ||
+          this.colorMappingService.getRegionColor(region) ||
+          '#808080'
+        );
     }
   }
 }
