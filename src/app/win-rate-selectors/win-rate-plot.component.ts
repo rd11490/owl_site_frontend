@@ -119,7 +119,7 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!this.containerRef?.nativeElement) return;
 
     const containerRect = this.containerRef.nativeElement.getBoundingClientRect();
-    const baseHeight = 800;
+    const baseHeight = 700;
     
     // Define fixed margins that account for axes, labels, and padding
     const margins = {
