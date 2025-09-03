@@ -79,13 +79,13 @@ export class ColorMappingService {
   private readonly rankColors: ColorMapping = {
     baseColors: {
       'All': '#000000',        // Black for "All" selection
-      'Bronze': '#955A38',     // Bronze metal
-      'Silver': '#A9A9A9',     // Silver metal
-      'Gold': '#FFC107',       // Gold metal
-      'Platinum': '#00CED1',   // Turquoise/platinum
-      'Diamond': '#00E5FF',    // Diamond blue
-      'Master': '#FF9B42',     // Master orange
-      'Grandmaster': '#FF497C' // Grandmaster pink/red
+      'Bronze': '#CD7F32',     // Bronze metal
+      'Silver': '#C0C0C0',     // Silver metal
+      'Gold': '#FFD700',       // Gold metal
+      'Platinum': '#FF0000',   // Pure red
+      'Diamond': '#B9F2FF',    // Diamond blue
+      'Master': '#006400',     // Dark green
+      'Grandmaster': '#800080' // Royal purple
     },
     defaultColor: '#808080'
   };
@@ -146,6 +146,16 @@ export class ColorMappingService {
   }
 
   private getColor(key: string, mapping: ColorMapping): string {
-    return mapping.baseColors[key] || mapping.defaultColor;
+    if (!key) return mapping.defaultColor;
+
+    // Try exact match first
+    if (mapping.baseColors[key]) {
+      return mapping.baseColors[key];
+    }
+
+    // Try case-insensitive match
+    const lowerKey = key.toLowerCase();
+    const matchingKey = Object.keys(mapping.baseColors).find(k => k.toLowerCase() === lowerKey);
+    return matchingKey ? mapping.baseColors[matchingKey] : mapping.defaultColor;
   }
 }
