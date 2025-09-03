@@ -72,7 +72,7 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
   private dimensions: ChartDimensions = {
     width: 0,
     height: 0,
-    margin: { top: 20, right: 80, bottom: 70, left: 60 },
+    margin: { top: 20, right: 100, bottom: 70, left: 100 },
     legendHeight: 40,
     legendPadding: 10
   };
@@ -121,26 +121,55 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
     const containerRect = this.containerRef.nativeElement.getBoundingClientRect();
     const baseHeight = 800;
     
-    this.dimensions = {
-      ...this.dimensions,
-      width: Math.max(0, containerRect.width - this.dimensions.margin.left - this.dimensions.margin.right),
-      height: Math.max(0, baseHeight - this.dimensions.margin.top - this.dimensions.margin.bottom)
+    // Define fixed margins that account for axes, labels, and padding
+    const margins = {
+      top: this.dimensions.margin.top,
+      right: this.dimensions.margin.right,
+      bottom: this.dimensions.margin.bottom,
+      left: this.dimensions.margin.left
     };
 
+    // Calculate available space
+    const availableWidth = containerRect.width;
+    
+    // Calculate plot dimensions ensuring we stay within bounds
+    const plotWidth = Math.max(0, availableWidth - margins.left - margins.right);
+    const plotHeight = Math.max(0, baseHeight - margins.top - margins.bottom);
+
+    // Update dimensions object
+    this.dimensions = {
+      ...this.dimensions,
+      width: plotWidth,
+      height: plotHeight,
+      margin: margins
+    };
+
+    // Size the entire SVG to match the container exactly
     if (this.svg) {
       this.svg
-        .attr('width', containerRect.width)
-        .attr('height', baseHeight);
+        .attr('width', availableWidth)
+        .attr('height', baseHeight)
+        .attr('viewBox', `0 0 ${availableWidth} ${baseHeight}`)
+        .attr('preserveAspectRatio', 'xMinYMin');
     }
 
+    // Position the main group with exact margins
     if (this.mainGroup) {
-      this.mainGroup.attr('transform', `translate(${this.dimensions.margin.left},${this.dimensions.margin.top})`);
+      this.mainGroup.attr('transform', `translate(${margins.left},${margins.top})`);
     }
 
+    // Update the scales to use the new plot dimensions
     if (this.scales) {
-      this.scales.xScale.range([0, this.dimensions.width]);
-      this.scales.yScale.range([this.dimensions.height, 0]);
+      this.scales.xScale.range([0, plotWidth]);
+      this.scales.yScale.range([plotHeight, 0]);
     }
+
+    console.log('Plot dimensions:', {
+      container: { width: availableWidth, height: containerRect.height },
+      margins,
+      plot: { width: plotWidth, height: plotHeight },
+      total: { width: availableWidth, height: baseHeight }
+    });
   }
 
   private initializePlot() {
@@ -185,8 +214,8 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
   private initializeBackground() {
     this.mainGroup.append('rect')
       .attr('class', 'plot-background')
-      .attr('width', '100%')
-      .attr('height', '100%')
+      .attr('width', '90%')
+      .attr('height', '90%')
       .attr('fill', 'white');
     
     this.mainGroup.append('rect')
@@ -614,8 +643,11 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
     this.mainGroup.attr('transform', `translate(${this.dimensions.margin.left},${this.dimensions.margin.top + totalHeaderHeight})`);
     
     // Calculate the total width needed for legend items
-    const totalWidth = Math.min(this.dimensions.width - this.dimensions.margin.left - this.dimensions.margin.right, itemsPerRow * itemWidth);
-    const startX = this.dimensions.margin.left + (this.dimensions.width - this.dimensions.margin.left - this.dimensions.margin.right - totalWidth) / 2;
+    // Calculate the total width available for the legend
+    const svgWidth = this.svg.node()?.getBoundingClientRect().width || 0;
+    const legendAvailableWidth = svgWidth - (this.dimensions.margin.left + this.dimensions.margin.right);
+    const totalWidth = Math.min(legendAvailableWidth, itemsPerRow * itemWidth);
+    const startX = this.dimensions.margin.left + (legendAvailableWidth - totalWidth) / 2;
 
     // Position the title above everything else
     this.legend.select('.plot-title')
