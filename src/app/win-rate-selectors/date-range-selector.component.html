@@ -1,0 +1,25 @@
+<div class="date-range-selector">
+  <mat-form-field appearance="fill">
+    <mat-label>Date Range</mat-label>
+    <mat-date-range-input [formGroup]="dateRange" [rangePicker]="picker">
+      <input matStartDate 
+             formControlName="start" 
+             placeholder="Start date">
+      <input matEndDate 
+             formControlName="end" 
+             placeholder="End date">
+    </mat-date-range-input>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+    <mat-error *ngIf="dateRange.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+    <mat-error *ngIf="dateRange.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+  </mat-form-field>
+
+  <div class="quick-select">
+    <mat-button-toggle-group>
+      <mat-button-toggle (click)="setLastDays(7)">7 Days</mat-button-toggle>
+      <mat-button-toggle (click)="setLastDays(30)">30 Days</mat-button-toggle>
+      <mat-button-toggle (click)="setLastDays(90)">90 Days</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+</div>

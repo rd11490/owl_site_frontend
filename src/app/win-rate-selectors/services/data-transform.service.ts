@@ -14,14 +14,19 @@ export class DataTransformService {
     data.forEach(series => {
       const key = this.getSeriesKey(series);
       const points = series.data
-        .map((point: RawDataPoint) => ({
-          date: new Date(point.date),
-          value: metric === 'Win Rate' ? point.winRate : point.pickRate,
-          hero: series.hero,
-          map: series.map,
-          rank: series.rank,
-          region: series.region
-        }))
+        .map((point: RawDataPoint) => {
+          // Parse the YYYY-MM-DD date string
+          const [year, month, day] = point.date.split('-').map(Number);
+          const date = new Date(year, month - 1, day);  // month is 0-based
+          return {
+            date,
+            value: metric === 'Win Rate' ? point.winRate : point.pickRate,
+            hero: series.hero,
+            map: series.map,
+            rank: series.rank,
+            region: series.region
+          };
+        })
         .sort((a: DataPoint, b: DataPoint) => a.date.getTime() - b.date.getTime());
 
       transformedData.set(key, points);

@@ -24,10 +24,13 @@ export class D3UtilsService {
   }
 
   /**
-   * Format a date as YYYY-MM-DD
+   * Format a date as YYYY-MM-DD with local timezone
    */
   formatDate(date: Date): string {
-    return d3.timeFormat('%Y-%m-%d')(date);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   /**

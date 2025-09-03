@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 interface DateRange {
@@ -8,54 +8,9 @@ interface DateRange {
 
 @Component({
   selector: 'date-range-selector',
-  styleUrls: ['../app.component.css'],
-  template: `
-    <div class="date-range-selector">
-      <mat-form-field appearance="fill">
-        <mat-label>Date Range</mat-label>
-        <mat-date-range-input [formGroup]="dateRange" [rangePicker]="picker">
-          <input matStartDate 
-                 formControlName="start" 
-                 placeholder="Start date">
-          <input matEndDate 
-                 formControlName="end" 
-                 placeholder="End date">
-        </mat-date-range-input>
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
-        <mat-error *ngIf="dateRange.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
-        <mat-error *ngIf="dateRange.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
-      </mat-form-field>
-
-      <div class="quick-select">
-        <mat-button-toggle-group>
-          <mat-button-toggle (click)="setLastDays(7)">7 Days</mat-button-toggle>
-          <mat-button-toggle (click)="setLastDays(30)">30 Days</mat-button-toggle>
-          <mat-button-toggle (click)="setLastDays(90)">90 Days</mat-button-toggle>
-        </mat-button-toggle-group>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .date-range-selector {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .date-range-selector mat-form-field {
-      min-width: 240px;
-    }
-    .quick-select {
-      display: flex;
-      justify-content: center;
-    }
-    .quick-select mat-button-toggle-group {
-      border-radius: 4px;
-    }
-    .quick-select mat-button-toggle {
-      font-size: 12px;
-    }
-  `]
+  templateUrl: './date-range-selector.component.html',
+  styleUrls: ['./date-range-selector.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DateRangeSelectorComponent implements OnInit {
   @Input() initialRange?: DateRange;
@@ -109,6 +64,9 @@ export class DateRangeSelectorComponent implements OnInit {
   }
 
   private formatDate(date: Date): string {
-    return date.toISOString().split('T')[0];
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }

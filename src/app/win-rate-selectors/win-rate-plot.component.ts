@@ -15,12 +15,7 @@ type LineSelection = d3.Selection<SVGPathElement, LineDataType, SVGGElement, unk
 
 @Component({
   selector: 'win-rate-plot',
-  template: `
-    <div class="win-rate-plot-container" #container>
-      <svg #svg></svg>
-      <div #tooltip class="tooltip"></div>
-    </div>
-  `,
+  templateUrl: './win-rate-plot.component.html',
   styleUrls: ['./win-rate-plot.component.css']
 })
 export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -370,7 +365,13 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
 
     xAxisTransition.call(d3.axisBottom(this.scales.xScale)
       .tickValues(sortedDates)
-      .tickFormat((d: any) => this.d3Utils.formatDate(d as Date)));
+      .tickFormat((d: any) => {
+        const date = d as Date;
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }));
 
     // Adjust x-axis tick labels
     this.xAxis.selectAll('text')

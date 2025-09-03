@@ -5,37 +5,33 @@
   margin: 0;
   padding: 0;
   background: white;
-  overflow: visible; /* Allow content to extend beyond container */
 }
 
+/* SVG and plot elements */
 svg {
   width: 100%;
   height: 100%;
-  cursor: move;  /* Indicate pannable */
-  background: white !important; /* Force white background */
-  display: block; /* Removes extra space at bottom */
-  overflow: visible; /* Allow content to extend beyond SVG */
+  cursor: move;
+  display: block;
+  overflow: visible;
 }
 
-.chart-background {
+/* Plot components */
+.plot-background,
+.chart-background,
+.main-group,
+.zoom-area {
   fill: white;
-}
-
-.main-group {
-  background: white;
 }
 
 .zoom-area {
   cursor: move;
-  fill: white;
   pointer-events: all;
 }
 
-.plot-background {
-  fill: white;
-}
-
-.x-axis text, .y-axis text {
+/* Axes styling */
+.x-axis text,
+.y-axis text {
   fill: black;
   font-size: 10px;
 }
@@ -45,8 +41,34 @@ svg {
   transform: rotate(-45deg) translate(-10px, 0);
 }
 
-.x-axis path, .y-axis path, .x-axis line, .y-axis line {
+.x-axis path,
+.y-axis path,
+.x-axis line,
+.y-axis line {
   stroke: black;
+}
+
+/* Tooltip styling */
+.tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 100;
+}
+
+/* Data points and lines */
+.line {
+  fill: none;
+  stroke-width: 2px;
+}
+
+.points circle {
+  stroke: white;
+  stroke-width: 1px;
 }
 
 .legend-group {
