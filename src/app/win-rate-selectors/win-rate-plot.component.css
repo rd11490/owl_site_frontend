@@ -1,0 +1,99 @@
+.win-rate-plot-container {
+  position: relative;
+  width: 100%;
+  height: 800px;
+  margin: 0;
+  padding: 0;
+  background: white;
+  overflow: visible; /* Allow content to extend beyond container */
+}
+
+svg {
+  width: 100%;
+  height: 100%;
+  cursor: move;  /* Indicate pannable */
+  background: white !important; /* Force white background */
+  display: block; /* Removes extra space at bottom */
+  overflow: visible; /* Allow content to extend beyond SVG */
+}
+
+.chart-background {
+  fill: white;
+}
+
+.main-group {
+  background: white;
+}
+
+.zoom-area {
+  cursor: move;
+  fill: white;
+  pointer-events: all;
+}
+
+.plot-background {
+  fill: white;
+}
+
+.x-axis text, .y-axis text {
+  fill: black;
+  font-size: 10px;
+}
+
+.x-axis text {
+  text-anchor: end;
+  transform: rotate(-45deg) translate(-10px, 0);
+}
+
+.x-axis path, .y-axis path, .x-axis line, .y-axis line {
+  stroke: black;
+}
+
+.legend-group {
+  font-size: 12px;
+}
+
+.legend-item {
+  cursor: pointer;
+}
+
+.legend-item:hover {
+  opacity: 0.8;
+}
+
+.legend-item text {
+  font-size: 12px;
+  fill: #333;
+  user-select: none;
+}
+
+.x-axis, .y-axis {
+  background: white;
+}
+
+.line {
+  transition: opacity 0.2s ease;
+}
+
+.line.dimmed {
+  opacity: 0.2;
+}
+
+.tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-size: 12px;
+  z-index: 1000;
+  transition: opacity 0.2s ease;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 2;
+  transition: opacity 0.15s ease;
+}
