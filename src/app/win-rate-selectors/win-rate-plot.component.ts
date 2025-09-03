@@ -72,7 +72,7 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
   private dimensions: ChartDimensions = {
     width: 0,
     height: 0,
-    margin: { top: 20, right: 80, bottom: 40, left: 60 },
+    margin: { top: 20, right: 80, bottom: 70, left: 60 },
     legendHeight: 40,
     legendPadding: 10
   };
@@ -327,9 +327,28 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
       .transition()
       .duration(300);
 
+    // Get unique dates from transformed data
+    const transformedData = this.dataTransform.transformData(this._data, this._metric);
+    const allDates = new Set<Date>();
+    
+    // Collect all dates from all series
+    Array.from(transformedData.values()).forEach(points => {
+      points.forEach(point => allDates.add(point.date));
+    });
+    
+    // Sort dates chronologically
+    const sortedDates = Array.from(allDates).sort((a, b) => a.getTime() - b.getTime());
+
     xAxisTransition.call(d3.axisBottom(this.scales.xScale)
-      .tickFormat((d: any) => this.d3Utils.formatDate(d as Date))
-      .ticks(d3.timeDay));
+      .tickValues(sortedDates)
+      .tickFormat((d: any) => this.d3Utils.formatDate(d as Date)));
+
+    // Adjust x-axis tick labels
+    this.xAxis.selectAll('text')
+      .style('text-anchor', 'end')
+      .attr('dx', '-.8em')
+      .attr('dy', '.15em')
+      .attr('transform', 'rotate(-45)');
 
     yAxisTransition.call(d3.axisLeft(this.scales.yScale)
       .ticks(10)
@@ -364,7 +383,7 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
       this.xAxis,
       'x-axis-label',
       this.dimensions.width / 2,
-      this.dimensions.margin.bottom - 10,
+      this.dimensions.margin.bottom - 5,
       null,
       'Date'
     );
@@ -385,6 +404,7 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
     const line = this.d3Utils.createLineGenerator(this.scales.xScale, this.scales.yScale);
     const linesGroup = this.getOrCreateLinesGroup();
     
+    // Update lines
     const lines = linesGroup.selectAll<SVGPathElement, LineDataType>('.line')
       .data(Array.from(data.entries()));
 
@@ -409,6 +429,65 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
       .duration(500)
       .style('opacity', 1)
       .attr('d', d => line(d[1]));
+
+    const self = this;
+    // Add points for each data point
+    Array.from(data.entries()).forEach(([key, points]) => {
+      const pointsGroup = linesGroup.selectAll(`.points-${key.replace(/[^a-zA-Z0-9]/g, '-')}`)
+        .data([points])
+        .join('g')
+        .attr('class', `points-${key.replace(/[^a-zA-Z0-9]/g, '-')}`);
+
+      const dots = pointsGroup.selectAll<SVGCircleElement, DataPoint>('circle')
+        .data(points);
+
+      dots.exit().remove();
+
+      const dotsEnter = dots.enter()
+        .append('circle')
+        .attr('r', 4)
+        .attr('fill', self.scales!.colorScale(key))
+        .attr('stroke', 'white')
+        .attr('stroke-width', '1px')
+        .style('opacity', 0);
+
+      dots.merge(dotsEnter)
+        .transition()
+        .duration(500)
+        .attr('cx', d => self.scales!.xScale(d.date))
+        .attr('cy', d => self.scales!.yScale(d.value))
+        .style('opacity', 1);
+
+      // Add hover interactions for points
+      pointsGroup.selectAll<SVGCircleElement, DataPoint>('circle')
+        .on('mouseover', function(this: SVGCircleElement, event: MouseEvent, d: DataPoint) {
+          d3.select(this)
+            .transition()
+            .duration(100)
+            .attr('r', 6)
+            .attr('stroke-width', '2px');
+
+          self.eventHandler.showTooltip(
+            self.tooltip,
+            self.mainGroup,
+            d,
+            self.scales!,
+            self._metric,
+            event.clientX - self.svg.node()!.getBoundingClientRect().left + 10,
+            event.clientY - self.svg.node()!.getBoundingClientRect().top - 10,
+            self.dimensions.height
+          );
+        })
+        .on('mouseout', function(this: SVGCircleElement) {
+          d3.select(this)
+            .transition()
+            .duration(100)
+            .attr('r', 4)
+            .attr('stroke-width', '1px');
+
+          self.eventHandler.hideTooltip(self.tooltip, self.mainGroup);
+        });
+    });
 
     this.setupLineInteractions(mergedLines);
   }
