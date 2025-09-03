@@ -630,71 +630,89 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       .filter(item => item.key && item.key.trim().length > 0); // Remove any empty labels
     
-    console.log('Final legend items:', legendItems);
+    // Calculate dimensions first
+    const svgWidth = this.svg.node()?.getBoundingClientRect().width || 0;
     
-    // Clear existing legend
+    // Clear all existing elements
+    this.svg.selectAll('.plot-title').remove();
     this.legend.selectAll('*').remove();
 
-    // Create a separate group for the title to control its position independently
-    const titleGroup = this.legend.append('g')
-      .attr('class', 'plot-title');
-
-    const titleElement = titleGroup.append('text')
-      .attr('text-anchor', 'middle')
-      .attr('dominant-baseline', 'hanging')
-      .style('font-size', '14px')
-      .style('font-weight', 'bold');
-
-    // Break title into multiple lines if too long
-    if (plotTitle.length > 50) {
-      const midPoint = Math.floor(plotTitle.split(' - ').length / 2);
-      const titleParts = plotTitle.split(' - ');
-      const firstLine = titleParts.slice(0, midPoint).join(' - ');
-      const secondLine = titleParts.slice(midPoint).join(' - ');
-      
-      titleElement.append('tspan')
-        .attr('x', 0)
-        .attr('dy', 0)
-        .text(firstLine);
-      
-      titleElement.append('tspan')
-        .attr('x', 0)
-        .attr('dy', '1.2em')
-        .text(secondLine);
-    } else {
-      titleElement.text(plotTitle);
-    }
-
-    // Constants for legend layout
+    // Constants for spacing
+    const titleHeight = 30; // Increased height for the title
+    const titleSpacing = 20; // Increased spacing between title and legend
     const itemHeight = 20;
-    const itemWidth = Math.min(150, this.dimensions.width / 3); // Ensure items aren't too wide
+    const itemWidth = Math.min(150, this.dimensions.width / 3);
     const symbolSize = 10;
     const itemsPerRow = Math.max(1, Math.floor((this.dimensions.width - this.dimensions.margin.left - this.dimensions.margin.right) / itemWidth));
     const rowCount = Math.ceil(legendItems.length / itemsPerRow);
-
-    // Constants for spacing
-    const titleHeight = 25; // Height for the title
-    const titleSpacing = 10; // Space between title and legend
     const totalLegendHeight = rowCount * itemHeight + this.dimensions.legendPadding * 2;
     const totalHeaderHeight = titleHeight + titleSpacing + totalLegendHeight;
 
-    // Move the main plot area down to account for both title and legend
-    this.mainGroup.attr('transform', `translate(${this.dimensions.margin.left},${this.dimensions.margin.top + totalHeaderHeight})`);
-    
-    // Calculate the total width needed for legend items
-    // Calculate the total width available for the legend
-    const svgWidth = this.svg.node()?.getBoundingClientRect().width || 0;
+    // Create and position title first
+    this.svg.append('g')
+      .attr('class', 'plot-title')
+      .attr('transform', `translate(${svgWidth / 2},${this.dimensions.margin.top})`)
+      .append('text')
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'hanging')
+      .style('font-size', '16px')
+      .style('font-weight', 'bold')
+      .call(text => {
+        if (plotTitle.length > 50) {
+          const midPoint = Math.floor(plotTitle.split(' - ').length / 2);
+          const titleParts = plotTitle.split(' - ');
+          const firstLine = titleParts.slice(0, midPoint).join(' - ');
+          const secondLine = titleParts.slice(midPoint).join(' - ');
+          
+          text.append('tspan')
+            .attr('x', 0)
+            .attr('dy', 0)
+            .text(firstLine);
+          
+          text.append('tspan')
+            .attr('x', 0)
+            .attr('dy', '1.2em')
+            .text(secondLine);
+        } else {
+          text.text(plotTitle);
+        }
+      });
+
+    // Position legend below title
+    const legendY = this.dimensions.margin.top + titleHeight + titleSpacing;
     const legendAvailableWidth = svgWidth - (this.dimensions.margin.left + this.dimensions.margin.right);
     const totalWidth = Math.min(legendAvailableWidth, itemsPerRow * itemWidth);
     const startX = this.dimensions.margin.left + (legendAvailableWidth - totalWidth) / 2;
 
-    // Position the title above everything else
-    this.legend.select('.plot-title')
-      .attr('transform', `translate(${this.dimensions.width / 2},${this.dimensions.margin.top})`);
-
-    // Create legend group - position below the title
+    // Create legend items
     const legendGroup = this.legend
-      .attr('transform', `translate(${startX},${this.dimensions.margin.top + titleHeight + titleSpacing})`);
+      .attr('transform', `translate(${startX},${legendY})`);
+
+    // Add legend items with proper spacing
+    legendItems.forEach((item, i) => {
+      const row = Math.floor(i / itemsPerRow);
+      const col = i % itemsPerRow;
+      const x = col * itemWidth;
+      const y = row * itemHeight;
+
+      const itemGroup = legendGroup.append('g')
+        .attr('class', 'legend-item')
+        .attr('transform', `translate(${x},${y})`);
+
+      itemGroup.append('rect')
+        .attr('width', symbolSize)
+        .attr('height', symbolSize)
+        .attr('fill', item.color);
+
+      itemGroup.append('text')
+        .attr('x', symbolSize + 5)
+        .attr('y', symbolSize - 2)
+        .style('font-size', '12px')
+        .text(item.key);
+    });
+
+    // Move the main plot area down
+    this.mainGroup.attr('transform', `translate(${this.dimensions.margin.left},${this.dimensions.margin.top + totalHeaderHeight})`);
 
     // Create legend items with proper spacing
     const items = legendGroup.selectAll('.legend-item')

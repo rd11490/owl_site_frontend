@@ -66,7 +66,7 @@ import { MetricType } from './win-rate-selectors/metric-selector.component';
 
     .plot-container {
       flex: 1;
-      min-height: 800px;
+      min-height: 850px;
       position: relative;
       border: 1px solid #ddd;
       border-radius: 8px;
