@@ -1,70 +1,105 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { SetupService } from '../setup.service';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { NgSelectComponent } from '@ng-select/ng-select';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'hero-selector',
   template: `
     <div class="hero-selector">
-      <mat-form-field appearance="fill">
-        <mat-label>Hero</mat-label>
-        <mat-select [formControl]="heroControl" multiple>
-          <mat-option (click)="toggleAll()">All</mat-option>
-          <mat-select-trigger>
-            {{getSelectedHeroDisplay()}}
-          </mat-select-trigger>
-          <mat-option *ngFor="let hero of heroes" [value]="hero">
-            {{hero}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <ng-select
+        [items]="groupedHeroes"
+        [multiple]="true"
+        [closeOnSelect]="false"
+        [groupBy]="'group'"
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Hero"
+        [virtualScroll]="true"
+        (change)="onHeroChange($event)"
+        [(ngModel)]="selectedHeroes">
+      </ng-select>
     </div>
   `,
   styles: [`
     .hero-selector {
       min-width: 200px;
     }
+    ::ng-deep .ng-select .ng-select-container {
+      min-height: 36px;
+    }
+    ::ng-deep .ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      margin: 2px;
+      padding: 2px 8px;
+    }
   `]
 })
-export class HeroSelectorComponent implements OnInit {
+export class HeroSelectorComponent {
   @Input() selectedHeroes: string[] = [];
+  @ViewChild(NgSelectComponent, { static: false }) ngSelect!: NgSelectComponent;
   @Output() heroesChange = new EventEmitter<string[]>();
 
-  heroControl = new FormControl<string[]>([]);
-  heroes: string[] = [];
+  readonly supportHeroes = [
+    'Ana',
+    'Baptiste',
+    'Brigitte',
+    'Illari',
+    'Juno',
+    'Kiriko',
+    'Lifeweaver',
+    'Lúcio',
+    'Mercy',
+    'Moira',
+    'Wuyang',
+    'Zenyatta'
+  ];
 
-  constructor(private setupService: SetupService) {}
+  readonly tankHeroes = [
+    'D.Va',
+    'Doomfist',
+    'Hazard',
+    'Junker Queen',
+    'Mauga',
+    'Orisa',
+    'Ramattra',
+    'Reinhardt',
+    'Roadhog',
+    'Sigma',
+    'Winston',
+    'Wrecking Ball',
+    'Zarya'
+  ];
 
-  async ngOnInit() {
-    // Get heroes from setup service
-    const setup = await this.setupService.constants;
-    this.heroes = setup.heroes.sort();
+  readonly dpsHeroes = [
+    'Ashe',
+    'Bastion',
+    'Cassidy',
+    'Echo',
+    'Freja',
+    'Genji',
+    'Hanzo',
+    'Junkrat',
+    'Mei',
+    'Pharah',
+    'Reaper',
+    'Sojourn',
+    'Soldier: 76',
+    'Sombra',
+    'Symmetra',
+    'Torbjörn',
+    'Tracer',
+    'Venture',
+    'Widowmaker'
+  ];
 
-    // Set initial value if provided
-    if (this.selectedHeroes.length > 0) {
-      this.heroControl.setValue(this.selectedHeroes);
-    }
+  readonly groupedHeroes = [
+    ...this.supportHeroes.map(hero => ({ id: hero, name: hero, group: 'Support' })),
+    ...this.tankHeroes.map(hero => ({ id: hero, name: hero, group: 'Tank' })),
+    ...this.dpsHeroes.map(hero => ({ id: hero, name: hero, group: 'Damage' }))
+  ];
 
-    // Subscribe to value changes
-    this.heroControl.valueChanges.subscribe(values => {
-      if (values) {
-        this.heroesChange.emit(values);
-      }
-    });
-  }
-
-  toggleAll() {
-    if (this.heroControl.value?.length === this.heroes.length) {
-      this.heroControl.setValue([]);
-    } else {
-      this.heroControl.setValue([...this.heroes]);
-    }
-  }
-
-  getSelectedHeroDisplay(): string {
-    const selected = this.heroControl.value || [];
-    if (selected.length === 0) return 'All Heroes';
-    if (selected.length === 1) return selected[0];
-    return `${selected.length} heroes selected`;
+  onHeroChange(event: any[]) {
+    this.heroesChange.emit(event?.map(item => item.id) || []);
   }
 }

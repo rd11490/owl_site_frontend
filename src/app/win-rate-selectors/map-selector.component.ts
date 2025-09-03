@@ -1,82 +1,97 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { NgSelectComponent } from '@ng-select/ng-select';
 import { transformMapName } from '../utils/map-name-transformer';
 
 @Component({
   selector: 'map-selector',
   template: `
     <div class="map-selector">
-      <mat-form-field appearance="fill">
-        <mat-label>Map</mat-label>
-        <mat-select [formControl]="mapControl" multiple>
-          <mat-option (click)="toggleAll()">All</mat-option>
-          <mat-select-trigger>
-            {{getSelectedMapDisplay()}}
-          </mat-select-trigger>
-          <mat-option *ngFor="let map of mapOptions" [value]="map">
-            {{transformMapName(map)}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <ng-select
+        [items]="groupedMaps"
+        [multiple]="true"
+        [closeOnSelect]="false"
+        [groupBy]="'group'"
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Map"
+        [virtualScroll]="true"
+        (change)="onMapChange($event)"
+        [(ngModel)]="selectedMaps">
+      </ng-select>
     </div>
   `,
   styles: [`
     .map-selector {
       min-width: 200px;
     }
+    ::ng-deep .ng-select .ng-select-container {
+      min-height: 36px;
+    }
+    ::ng-deep .ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      margin: 2px;
+      padding: 2px 8px;
+    }
   `]
 })
 export class MapSelectorComponent {
   @Input() selectedMaps: string[] = [];
-  @Output() mapsChange = new EventEmitter<string[]>();
+  @ViewChild(NgSelectComponent, { static: false }) ngSelect!: NgSelectComponent;
 
-  mapControl = new FormControl<string[]>([]);
-  
-  readonly mapOptions = [
-    'ilios',
-    'oasis',
-    'lijiang-tower',
-    'nepal',
+  readonly controlMaps = [
     'busan',
-    'eichenwalde',
-    'kings-row',
-    'midtown',
-    'route-66',
+    'ilios',
+    'lijang-tower',
+    'nepal',
+    'oasis',
+    'samoa'
+  ];
+
+  readonly escortMaps = [
     'circuit-royal',
     'dorado',
-    'watchpoint-gibraltar',
-    'hollywood',
-    'numbani',
     'havana',
     'junkertown',
-    'paraiso',
+    'rialto',
+    'route-66',
+    'shambali-monastery',
+    'watchpoint-gibraltar'
+  ];
+
+  readonly hybridMaps = [
+    'blizzard-world',
+    'eichenwalde',
+    'hollywood',
+    'kings-row',
+    'midtown',
+    'numbani',
+    'paraiso'
+  ];
+
+  readonly pushMaps = [
     'colosseo',
     'esperanca',
     'new-queen-street'
   ];
 
-  constructor() {
-    this.mapControl.valueChanges.subscribe(values => {
-      this.mapsChange.emit(values || []);
-    });
-  }
+  readonly flashpointMaps = [
+    'suravasa',
+    'new-junk-city',
+    'aatlis'
+  ];
 
-  toggleAll() {
-    if (this.mapControl.value?.length === this.mapOptions.length) {
-      this.mapControl.setValue([]);
-    } else {
-      this.mapControl.setValue([...this.mapOptions]);
-    }
-  }
+  @Output() mapsChange = new EventEmitter<string[]>();
 
-  transformMapName(name: string): string {
-    return transformMapName(name);
-  }
+  readonly groupedMaps = [
+    ...this.controlMaps.map(map => ({ id: map, name: transformMapName(map), group: 'Control' })),
+    ...this.escortMaps.map(map => ({ id: map, name: transformMapName(map), group: 'Escort' })),
+    ...this.hybridMaps.map(map => ({ id: map, name: transformMapName(map), group: 'Hybrid' })),
+    ...this.pushMaps.map(map => ({ id: map, name: transformMapName(map), group: 'Push' })),
+    ...this.flashpointMaps.map(map => ({ id: map, name: transformMapName(map), group: 'Flashpoint' }))
+  ];
 
-  getSelectedMapDisplay(): string {
-    const selected = this.mapControl.value || [];
-    if (selected.length === 0) return 'All Maps';
-    if (selected.length === 1) return this.transformMapName(selected[0]);
-    return `${selected.length} maps selected`;
+  onMapChange(event: any) {
+    this.mapsChange.emit(event?.map((item: any) => item.id) || []);
   }
 }

@@ -14,6 +14,9 @@ import { DateRangeSelectorComponent } from './win-rate-selectors/date-range-sele
 import { MetricSelectorComponent } from './win-rate-selectors/metric-selector.component';
 import { WinRatePlotComponent } from './win-rate-selectors/win-rate-plot.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatButtonModule } from '@angular/material/button';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'win-rates-page',
@@ -23,9 +26,17 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 export class WinRatesPageComponent implements OnInit, OnDestroy {
   winRates: WinRateData[] = [];
   selectedRegions: string[] = ['Americas'];
-  selectedRanks: string[] = [];
-  selectedMaps: string[] = [];
-  selectedHeroes: string[] = [];
+  selectedRanks: string[] = [
+    'Bronze',
+    'Silver',
+    'Gold',
+    'Platinum',
+    'Diamond',
+    'Master',
+    'Grandmaster'
+  ];
+  selectedMaps: string[] = [];  // All maps
+  selectedHeroes: string[] = ['Ana'];
   selectedMetric: MetricType = 'Win Rate';
   
   initialDateRange: { min: string; max: string } = {
@@ -40,7 +51,8 @@ export class WinRatesPageComponent implements OnInit, OnDestroy {
   constructor(
     private winRateService: WinRateService,
     private queryParamsService: WinRateQueryParamsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -50,13 +62,24 @@ export class WinRatesPageComponent implements OnInit, OnDestroy {
       .subscribe(params => {
         const parsedParams = this.queryParamsService.parseUrlParams(params);
         
-        // Update component state
+        // Update component state with defaults
         this.selectedRegions = parsedParams.region || ['Americas'];
-        this.selectedRanks = parsedParams.rank || [];
-        this.selectedMaps = parsedParams.map || [];
-        this.selectedHeroes = parsedParams.hero || [];
-        this.selectedMetric = parsedParams.metric;
-        this.initialDateRange = parsedParams.dateRange;
+        this.selectedRanks = parsedParams.rank || [
+          'Bronze',
+          'Silver',
+          'Gold',
+          'Platinum',
+          'Diamond',
+          'Master',
+          'Grandmaster'
+        ];
+        this.selectedMaps = parsedParams.map || [];  // All maps
+        this.selectedHeroes = parsedParams.hero || ['Ana'];
+        this.selectedMetric = parsedParams.metric || 'Win Rate';
+        this.initialDateRange = parsedParams.dateRange || this.getDefaultDateRange();
+
+        // Update the filter text
+        this.updateFilterText();
 
         // Load data
         this.loadWinRates(parsedParams);
@@ -81,14 +104,31 @@ export class WinRatesPageComponent implements OnInit, OnDestroy {
 
   private async loadWinRates(params: WinRateRequest) {
     try {
+      // Convert empty arrays to undefined
+      const cleanedParams: WinRateRequest = {
+        ...params,
+        region: params.region?.length ? params.region : ['Americas'],
+        rank: params.rank?.length ? params.rank : [
+          'Bronze',
+          'Silver',
+          'Gold',
+          'Platinum',
+          'Diamond',
+          'Master',
+          'Grandmaster'
+        ],
+        map: params.map?.length ? params.map : undefined,  // All maps
+        hero: params.hero?.length ? params.hero : ['Ana'],
+      };
+
       // Update URL params
       this.queryParamsService.updateUrlParams({
-        ...params,
+        ...cleanedParams,
         metric: this.selectedMetric
       });
 
       // Load data with caching
-      this.winRates = await this.winRateService.getCachedWinRates(params);
+      this.winRates = await this.winRateService.getCachedWinRates(cleanedParams);
     } catch (error) {
       console.error('Error loading win rates:', error);
       this.winRates = [];
@@ -108,52 +148,37 @@ export class WinRatesPageComponent implements OnInit, OnDestroy {
 
   onRegionsChange(regions: string[]) {
     this.selectedRegions = regions;
-    this.loadWinRates({
-      dateRange: this.getDefaultDateRange(),
-      region: regions,
-      rank: this.selectedRanks,
-      map: this.selectedMaps,
-      hero: this.selectedHeroes
-    });
+    this.updateFilterText();
   }
 
   onRanksChange(ranks: string[]) {
     this.selectedRanks = ranks;
-    this.loadWinRates({
-      dateRange: this.getDefaultDateRange(),
-      region: this.selectedRegions,
-      rank: ranks,
-      map: this.selectedMaps,
-      hero: this.selectedHeroes
-    });
+    this.updateFilterText();
   }
 
   onMapsChange(maps: string[]) {
     this.selectedMaps = maps;
-    this.loadWinRates({
-      dateRange: this.getDefaultDateRange(),
-      region: this.selectedRegions,
-      rank: this.selectedRanks,
-      map: maps,
-      hero: this.selectedHeroes
-    });
+    this.updateFilterText();
   }
 
   onHeroesChange(heroes: string[]) {
     this.selectedHeroes = heroes;
-    this.loadWinRates({
-      dateRange: this.initialDateRange,
-      region: this.selectedRegions,
-      rank: this.selectedRanks,
-      map: this.selectedMaps,
-      hero: heroes
-    });
+    this.updateFilterText();
   }
   
   onDateRangeChange(dateRange: { min: string; max: string }) {
     this.initialDateRange = dateRange;
+  }
+
+  onMetricChange(metric: MetricType) {
+    this.selectedMetric = metric;
+    // Only metric change triggers immediate update
+    this.search();
+  }
+
+  search() {
     this.loadWinRates({
-      dateRange,
+      dateRange: this.initialDateRange,
       region: this.selectedRegions,
       rank: this.selectedRanks,
       map: this.selectedMaps,
@@ -161,15 +186,31 @@ export class WinRatesPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  onMetricChange(metric: MetricType) {
-    this.selectedMetric = metric;
-    this.queryParamsService.updateUrlParams({
-      dateRange: this.initialDateRange,
-      region: this.selectedRegions,
-      rank: this.selectedRanks,
-      map: this.selectedMaps,
-      hero: this.selectedHeroes,
-      metric
-    });
+  private filterText = 'Filter Options';
+
+  private updateFilterText(): void {
+    const parts: string[] = [];
+    
+    if (this.selectedHeroes?.length) {
+      parts.push(`Heroes: ${this.selectedHeroes.join(', ')}`);
+    }
+    
+    if (this.selectedMaps?.length) {
+      parts.push(`Maps: ${this.selectedMaps.join(', ')}`);
+    }
+    
+    if (this.selectedRanks?.length) {
+      parts.push(`Ranks: ${this.selectedRanks.join(', ')}`);
+    }
+    
+    if (this.selectedRegions?.length) {
+      parts.push(`Regions: ${this.selectedRegions.join(', ')}`);
+    }
+
+    this.filterText = parts.join(' | ') || 'Filter Options';
+  }
+
+  getSelectedFiltersText(): string {
+    return this.filterText;
   }
 }

@@ -94,19 +94,47 @@ export class ChartService {
     };
   }
 
-  private getColor(row: QueryResponseRow): string {
-    if (row.player && row.hero) {
-      return getPlayerColor(row.player, this.setupService.constantsSync.players);
-    } else if (row.teamName && row.hero) {
-      return getHeroColor(row.hero);
-    } else if (row.player) {
-      return getPlayerColor(row.player, this.setupService.constantsSync.players);
-    } else if (row.teamName) {
-      return getTeamColor(row.teamName);
-    } else if (row.hero) {
-      return getHeroColor(row.hero);
+  private getColorStrategy(): 'player' | 'hero' | 'team' {
+    if (!this.queryService.queryResponseSync?.data) {
+      return 'hero'; // Default to hero colors if no data
     }
-    return '#000000';
+
+    const data = this.queryService.queryResponseSync.data;
+    
+    // Count unique values for each category
+    const uniqueValues = {
+      player: new Set(data.map(row => row.player).filter(Boolean)).size,
+      hero: new Set(data.map(row => row.hero).filter(Boolean)).size,
+      team: new Set(data.map(row => row.teamName).filter(Boolean)).size
+    };
+
+    // Return the category with the most unique values
+    if (uniqueValues.player >= uniqueValues.hero && uniqueValues.player >= uniqueValues.team) {
+      return 'player';
+    } else if (uniqueValues.hero >= uniqueValues.team) {
+      return 'hero';
+    } else {
+      return 'team';
+    }
+  }
+
+  private getColor(row: QueryResponseRow): string {
+    const strategy = this.getColorStrategy();
+    
+    switch (strategy) {
+      case 'player':
+        return row.player ? 
+          getPlayerColor(row.player, this.setupService.constantsSync.players) : 
+          '#000000';
+      case 'hero':
+        return row.hero ? 
+          getHeroColor(row.hero) : 
+          '#000000';
+      case 'team':
+        return row.teamName ? 
+          getTeamColor(row.teamName) : 
+          '#000000';
+    }
   }
 
   private getLabel(row: QueryResponseRow): string {

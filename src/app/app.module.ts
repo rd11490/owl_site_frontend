@@ -25,6 +25,7 @@ import { MatNativeDateModule, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
@@ -142,6 +143,7 @@ import { CircuitPointService } from './circuitPoint.service';
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
+    MatRadioModule,
     NgSelectModule,
     ReactiveFormsModule
   ],

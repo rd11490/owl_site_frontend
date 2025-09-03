@@ -1,50 +1,56 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
   selector: 'region-selector',
   template: `
     <div class="region-selector">
-      <mat-form-field appearance="fill">
-        <mat-label>Region</mat-label>
-        <mat-select [formControl]="regionControl" multiple>
-          <mat-option (click)="toggleAll()">All</mat-option>
-          <mat-option *ngFor="let region of regionOptions" [value]="region">
-            {{region}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <ng-select
+        [items]="regions"
+        [multiple]="true"
+        [closeOnSelect]="false"
+        bindLabel="name"
+        bindValue="id"
+        placeholder="Region"
+        [virtualScroll]="true"
+        (change)="onRegionChange($event)"
+        [(ngModel)]="selectedRegions">
+      </ng-select>
     </div>
   `,
   styles: [`
     .region-selector {
       min-width: 200px;
     }
+    ::ng-deep .ng-select .ng-select-container {
+      min-height: 36px;
+    }
+    ::ng-deep .ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      margin: 2px;
+      padding: 2px 8px;
+    }
   `]
 })
 export class RegionSelectorComponent {
   @Input() selectedRegions: string[] = [];
   @Output() regionsChange = new EventEmitter<string[]>();
+  @ViewChild(NgSelectComponent, { static: false }) ngSelect!: NgSelectComponent;
 
-  regionControl = new FormControl<string[]>(['Americas']);
-  
   readonly regionOptions = [
     'Americas',
     'Asia',
     'Europe'
   ];
 
-  constructor() {
-    this.regionControl.valueChanges.subscribe(values => {
-      this.regionsChange.emit(values || []);
-    });
-  }
+  readonly regions = [
+    { id: 'Americas', name: 'Americas' },
+    { id: 'Asia', name: 'Asia' },
+    { id: 'Europe', name: 'Europe' }
+  ];
 
-  toggleAll() {
-    if (this.regionControl.value?.length === this.regionOptions.length) {
-      this.regionControl.setValue([]);
-    } else {
-      this.regionControl.setValue([...this.regionOptions]);
-    }
+  onRegionChange(event: any) {
+    this.regionsChange.emit(event?.map((item: any) => item.id) || []);
   }
 }

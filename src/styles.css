@@ -1,6 +1,75 @@
 /* Master Styles */
 @import "~@ng-select/ng-select/themes/default.theme.css";
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+/* Material Override Styles */
+.mat-expansion-panel {
+  background-color: white !important;
+  color: black !important;
+}
+
+.mat-expansion-panel-header {
+  background-color: white !important;
+}
+
+.mat-expansion-indicator::after {
+  color: black !important;
+}
+
+.mat-form-field-label {
+  color: black !important;
+}
+
+.mat-select-value {
+  color: black !important;
+}
+
+.mat-select-arrow {
+  color: black !important;
+}
+
+.mat-form-field-underline {
+  background-color: black !important;
+}
+
+.mat-form-field-ripple {
+  background-color: black !important;
+}
+
+.mat-option {
+  color: black !important;
+}
+
+.mat-option.mat-selected:not(.mat-option-disabled) {
+  color: black !important;
+}
+
+.mat-select-panel {
+  background: white !important;
+}
+
+.mat-form-field.mat-focused .mat-form-field-label {
+  color: black !important;
+}
+
+.mat-form-field.mat-focused .mat-form-field-ripple {
+  background-color: black !important;
+}
+
+.mat-radio-button.mat-accent .mat-radio-inner-circle {
+  background-color: black !important;
+}
+
+.mat-radio-button.mat-accent .mat-radio-outer-circle {
+  border-color: black !important;
+}
+
+.mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element {
+  background-color: rgba(0, 0, 0, .1) !important;
+}
+
+.mat-spinner circle {
+  stroke: black !important;
+}
 
 h1 {
     color: #369;

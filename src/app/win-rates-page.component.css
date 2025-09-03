@@ -1,23 +1,134 @@
 .win-rates-container {
   padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.win-rates-container h1 {
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.metric-selector-container {
+  display: flex;
+  justify-content: center;
+}
+
+.filters-accordion {
+  margin: 20px 0 16px 0;
+}
+
+.controls-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.left-spacer {
+  flex: 1;
+}
+
+.right-spacer {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+::ng-deep .filters-accordion .mat-expansion-panel-header-title {
+  justify-content: center;
+  flex: 1;
+}
+
+::ng-deep .filters-accordion .mat-expansion-panel-header {
+  padding: 0 16px;
+}
+
+::ng-deep .filters-accordion .mat-expansion-panel {
+  overflow: visible !important;
+}
+
+::ng-deep .filters-accordion .mat-expansion-panel-content {
+  overflow: visible !important;
+}
+
+::ng-deep .filters-accordion .mat-expansion-panel-body {
+  overflow: visible !important;
 }
 
 .filters {
   margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.filter-row {
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
 }
 
 .filter-group {
+  flex: 1;
+  min-width: 250px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.filter-group label {
+.search-button-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px 0 24px;
+}
+
+.search-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+.filters-accordion {
+  margin-bottom: 8px;
+}
+
+.search-button {
+  background-color: #444;
+  border: none;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  min-width: 120px;
   font-weight: 500;
-  color: #333;
+}
+
+.search-button:hover {
+  background-color: #333;
+}
+
+.search-button:active {
+  background-color: #222;
+}
+
+.search-button:disabled {
+  background-color: #eee;
+  color: #aaa;
+  cursor: not-allowed;
 }
 
 .content {
