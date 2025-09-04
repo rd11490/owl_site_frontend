@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
 import * as d3 from 'd3';
 import { WinRateData } from '../models';
 import { MetricType } from './metric-selector.component';
@@ -18,7 +18,7 @@ type LineSelection = d3.Selection<SVGPathElement, LineDataType, SVGGElement, unk
   templateUrl: './win-rate-plot.component.html',
   styleUrls: ['./win-rate-plot.component.css']
 })
-export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
+export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   constructor(
     private d3Utils: D3UtilsService,
     private scaleService: ScaleService,
@@ -26,6 +26,12 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
     private eventHandler: EventHandlerService,
     private cdr: ChangeDetectorRef
   ) {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (this.initialized && (changes['data'] || changes['metric'])) {
+      this.updatePlotWithErrorHandling();
+    }
+  }
 
   @ViewChild('container') containerRef!: ElementRef<HTMLDivElement>;
   @ViewChild('svg') svgRef!: ElementRef<SVGElement>;
