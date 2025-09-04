@@ -144,11 +144,57 @@ h1 {
     display: inline-block;
     width: 30%;
     padding: 0% 1% 0% 1%;
+    vertical-align: top;
 }
 
 .option-line {
     padding: 0% 0 0% 0;
+    margin-bottom: 15px;
 }
+
+.min-time-form-field {
+    display: block;
+    width: 100%;
+}
+
+::ng-deep .mat-form-field {
+    width: 100%;
+    font-size: 16px;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+    margin-top: 16px;
+    padding-bottom: 8px;
+}
+
+::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 1.25em;
+}
+
+::ng-deep .mat-form-field.mat-form-field-appearance-fill {
+    line-height: 1.5;
+}
+
+::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
+    padding: 0.75em 0.75em 0 0.75em;
+    background-color: rgba(0, 0, 0, 0.04);
+    border-radius: 4px 4px 0 0;
+    min-height: 48px;
+}
+
+::ng-deep .mat-form-field-infix {
+    padding: .5em 0;
+    font-size: 14px;
+}
+
+::ng-deep .mdc-text-field--filled {
+    height: 48px;
+}
+
+::ng-deep .mat-mdc-input-element {
+    font-size: 14px;
+}
+
 
 .search-button {
     background-color: #000000; /* Black */

@@ -1,6 +1,6 @@
 <div>
-    <mat-form-field class="min-time-form-field">
-        <mat-label>Minimum Time Played (minutes, optional)</mat-label>
-        <input matInput type="number" (change)="setTimePlayed()" [(ngModel)]='this.minTime'>
+    Minimum Time Played (minutes, optional)
+    <mat-form-field class="min-time-form-field" appearance="fill">
+        <input matInput type="number" (change)="setTimePlayed()" [(ngModel)]='this.minTime' placeholder="Time" style="font-size: 16px;">
     </mat-form-field>
 </div>

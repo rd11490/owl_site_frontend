@@ -335,7 +335,8 @@ export class PlotComponent implements OnInit, OnDestroy {
           .html(
             d.label +
               (d.labelAdditional ? `<br/>${d.labelAdditional}` : '') +
-              `<br/>${d.xLabel}: ${d.x.toFixed(2)}<br/>${d.yLabel}: ${d.y.toFixed(2)}<br/>${d.sizeLabel}: ${d.size.toFixed(2)}`,
+              `<br/>${d.xLabel}: ${d.x.toFixed(2)}<br/>${d.yLabel}: ${d.y.toFixed(2)}` +
+              (d.sizeLabel ? `<br/>${d.sizeLabel}: ${d.size.toFixed(2)}` : ''),
           )
           .style('left', `${e.pageX + 10}px`)
           .style('top', `${e.pageY - 10}px`);

@@ -31,22 +31,8 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('svg') svgRef!: ElementRef<SVGElement>;
   @ViewChild('tooltip') tooltipRef!: ElementRef<HTMLDivElement>;
 
-  @Input() set data(value: WinRateData[]) {
-    this._data = value || [];
-    if (this.initialized) {
-      this.updatePlotWithErrorHandling();
-    }
-  }
-  
-  @Input() set metric(value: MetricType) {
-    this._metric = value;
-    if (this.initialized) {
-      this.updatePlotWithErrorHandling();
-    }
-  }
-
-  private _data: WinRateData[] = [];
-  private _metric: MetricType = 'Win Rate';
+  @Input() data: WinRateData[] = [];
+  @Input() metric: MetricType = 'Win Rate';
   private initialized = false;
   private resizeObserver: ResizeObserver | null = null;
   private resizeCallback: () => void = () => {};
@@ -91,7 +77,7 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
     this.updateDimensions();
     this.initializePlot();
     this.initialized = true;
-    if (this._data.length > 0) {
+    if (this.data.length > 0) {
       this.updatePlotWithErrorHandling();
     }
   }
@@ -188,7 +174,7 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
       this.scales = this.scaleService.initializeScales(
         this.dimensions.width,
         this.dimensions.height,
-        this._data
+        this.data
       );
     } catch (error) {
       console.error('Error initializing scales:', error);
@@ -248,7 +234,7 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
     plotTitle: string 
   } {
     // Get the original WinRateData array from this._data
-    const entries = this._data;
+    const entries = this.data;
     console.log('Processing entries:', entries);
     
     // Find common elements by checking if all entries have the same value
@@ -262,7 +248,7 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
     const isCommon = (prop: StringProperties): boolean => {
       if (entries.length === 0) return false;
       const firstValue = entries[0][prop];
-      return entries.every(entry => entry[prop] === firstValue);
+      return entries.every((entry: WinRateData) => entry[prop] === firstValue);
     };
 
     // Check each property and add to common elements if it's common
@@ -278,11 +264,11 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
     const uniqueLabels = new Map<string, string>();
     const keys = Array.from(data.keys());
     
-    entries.forEach((entry, index) => {
+    entries.forEach((entry: WinRateData, index: number) => {
       const labelParts: string[] = [];
       
       // Check each property and add to label if it's not common
-      propertiesToCheck.forEach(prop => {
+      propertiesToCheck.forEach((prop: StringProperties) => {
         if (!commonElements.includes(entry[prop])) {
           labelParts.push(entry[prop]);
         }
@@ -321,7 +307,7 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     // Create plot title from formatted common elements
-    const plotTitle = [...formattedCommonElements, this._metric]
+    const plotTitle = [...formattedCommonElements, this.metric]
       .filter(element => element && element.trim() !== '')
       .join(' - ')
       .replace(/\s*-\s*-\s*/g, ' - ')
@@ -329,11 +315,11 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // Create unique labels with proper formatting
     const formattedUniqueLabels = new Map<string, string>();
-    entries.forEach((entry, index) => {
+    entries.forEach((entry: WinRateData, index: number) => {
       const labelParts: string[] = [];
       
       // Check each property and add formatted value to label if it's not common
-      propertiesToCheck.forEach(prop => {
+      propertiesToCheck.forEach((prop: StringProperties) => {
         if (!commonElements.includes(entry[prop])) {
           labelParts.push(formatForDisplay(entry[prop], prop));
         }
@@ -353,9 +339,9 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private updatePlot() {
-    if (!this._data || !this.scales) return;
+    if (!this.data || !this.scales) return;
 
-    const data = this.dataTransform.transformData(this._data, this._metric);
+    const data = this.dataTransform.transformData(this.data, this.metric);
     console.log('data', data)
     const allDataPoints = Array.from(data.values()).flat();
     if (allDataPoints.length === 0) return;
@@ -386,7 +372,7 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
       .duration(300);
 
     // Get unique dates from transformed data
-    const transformedData = this.dataTransform.transformData(this._data, this._metric);
+    const transformedData = this.dataTransform.transformData(this.data, this.metric);
     const allDates = new Set<Date>();
     
     // Collect all dates from all series
@@ -458,7 +444,7 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
       -this.dimensions.height / 2,
       -this.dimensions.margin.left + 20,
       'rotate(-90)',
-      this._metric === 'Win Rate' ? 'Win Rate (%)' : 'Pick Rate (%)'
+      this.metric === 'Win Rate' ? 'Win Rate (%)' : 'Pick Rate (%)'
     );
   }
 
@@ -536,7 +522,7 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
             self.mainGroup,
             d,
             self.scales!,
-            self._metric,
+            self.metric,
             event.clientX - self.svg.node()!.getBoundingClientRect().left + 10,
             event.clientY - self.svg.node()!.getBoundingClientRect().top - 10,
             self.dimensions.height
@@ -586,7 +572,7 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit {
         that.mainGroup,
         nearestPoint,
         that.scales,
-        that._metric,
+        that.metric,
         event.clientX - svgRect.left + 10,
         event.clientY - svgRect.top - 10,
         that.dimensions.height
