@@ -8,6 +8,7 @@ import { ScaleService } from './services/scale.service';
 import { DataTransformService } from './services/data-transform.service';
 import { EventHandlerService } from './services/event-handler.service';
 import { SvgSelection, GroupSelection, TooltipSelection } from './models/d3-types';
+import { PATCH_DATES, PatchInfo } from './models/patch-dates';
 
 type D3Event = d3.D3DragEvent<any, any, any> | MouseEvent;
 type LineDataType = [string, DataPoint[]];
@@ -363,7 +364,91 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit, O
     
     // Update the main plot components
     this.updateAxes();
+    this.drawPatchLines(); // Draw patch lines before the data lines
     this.updateLines(data, allDataPoints);
+  }
+
+  private drawPatchLines() {
+    if (!this.scales?.xScale) return;
+
+    // Remove existing patch lines
+    this.mainGroup.selectAll('.patch-line-group').remove();
+
+    // Create a group for each patch line
+    const patchLineGroups = this.mainGroup.selectAll('.patch-line-group')
+      .data(PATCH_DATES)
+      .enter()
+      .append('g')
+      .attr('class', 'patch-line-group');
+
+    // Draw the lines and add interaction
+    patchLineGroups.each((patchInfo: PatchInfo, i: number, groups: SVGGElement[] | ArrayLike<SVGGElement>) => {
+      const group = d3.select(groups[i]);
+      const patchDate = new Date(patchInfo.date);
+      
+      // Calculate the midpoint position
+      const nextDay = new Date(patchDate);
+      nextDay.setDate(nextDay.getDate() + 1);
+      const midPoint = new Date((patchDate.getTime() + nextDay.getTime()) / 2);
+
+      // Draw the vertical line
+      const line = group.append('line')
+        .attr('class', 'patch-line')
+        .attr('x1', this.scales!.xScale(midPoint))
+        .attr('x2', this.scales!.xScale(midPoint))
+        .attr('y1', 0)
+        .attr('y2', this.dimensions.height)
+        .style('stroke', 'rgba(128, 128, 128, 0.5)')
+        .style('stroke-width', '2px')
+        .style('stroke-dasharray', '4,4');
+
+      // Add mouse event handlers for the tooltip
+      group
+        .on('mouseover', (event: MouseEvent) => {
+          // Highlight the line on hover
+          line.style('stroke', 'rgba(128, 128, 128, 0.8)')
+              .style('stroke-width', '3px');
+
+          // Show tooltip using the event handler service
+          const svgRect = this.svg.node()?.getBoundingClientRect();
+          if (svgRect) {
+            this.eventHandler.showPatchTooltip(
+              this.tooltip,
+              this.mainGroup,
+              patchInfo,
+              event.clientX - svgRect.left + 10,
+              event.clientY - svgRect.top - 10
+            );
+          }
+        })
+        .on('mousemove', (event: MouseEvent) => {
+          const svgRect = this.svg.node()?.getBoundingClientRect();
+          if (svgRect) {
+            this.eventHandler.moveTooltip(
+              this.tooltip,
+              event.clientX - svgRect.left + 10,
+              event.clientY - svgRect.top - 10
+            );
+          }
+        })
+        .on('mouseout', () => {
+          this.eventHandler.hideTooltip(this.tooltip, this.mainGroup);
+          
+          // Reset line style
+          line.style('stroke', 'rgba(128, 128, 128, 0.5)')
+              .style('stroke-width', '2px');
+        });
+
+      // Add an invisible wider line for easier hovering
+      group.append('line')
+        .attr('class', 'patch-line-hover')
+        .attr('x1', this.scales!.xScale(midPoint))
+        .attr('x2', this.scales!.xScale(midPoint))
+        .attr('y1', 0)
+        .attr('y2', this.dimensions.height)
+        .style('stroke', 'transparent')
+        .style('stroke-width', '10px'); // Wide invisible line for easier hovering
+    });
   }
 
   private updateAxes() {

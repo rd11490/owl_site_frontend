@@ -74,6 +74,27 @@ export class EventHandlerService {
     tooltip.style('left', `${xPos}px`).style('top', `${yPos}px`);
   }
 
+  showPatchTooltip(
+    tooltip: TooltipSelection | null,
+    mainGroup: GroupSelection | null,
+    patchInfo: { title: string; date: string },
+    xPos: number,
+    yPos: number,
+  ) {
+    if (!tooltip || !mainGroup) return;
+
+    tooltip
+      .html(`
+        <div style="padding: 8px;">
+          <strong>${patchInfo.title}</strong><br/>
+          <span>${patchInfo.date}</span>
+        </div>
+      `)
+      .style('opacity', 1);
+
+    this.moveTooltip(tooltip, xPos, yPos);
+  }
+
   hideTooltip(tooltip: TooltipSelection | null, mainGroup: GroupSelection | null) {
     if (!tooltip || !mainGroup) return;
     tooltip.style('opacity', 0);
