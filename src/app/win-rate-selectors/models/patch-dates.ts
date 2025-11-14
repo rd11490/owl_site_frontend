@@ -17,4 +17,3 @@ export const PATCH_DATES: PatchInfo[] = [
         title: 'Season 19 Mid Season Update'
     }
 ];
-];
