@@ -11,5 +11,10 @@ export const PATCH_DATES: PatchInfo[] = [
     {
         date: '2025-10-14',
         title: 'Season 19'
+    },
+    {
+        date: '2025-11-11',
+        title: 'Season 19 Mid Season Update'
     }
+];
 ];
