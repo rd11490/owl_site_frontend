@@ -60,6 +60,7 @@ export class ColorMappingService {
       Symmetra: '#40e0d0', // Turquoise matching her design
       Torbjörn: '#cd853f', // Peru brown matching his armor
       Tracer: '#ffa500', // Orange matching her leggings
+      Vendetta: '#961a1cff', // Added Vendetta as a hero
       Venture: '#00ff99', // Bright mint
       Widowmaker: '#9370db', // Medium purple matching her skin
     },

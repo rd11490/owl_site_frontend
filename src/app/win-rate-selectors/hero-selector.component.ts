@@ -91,6 +91,7 @@ export class HeroSelectorComponent {
     'Symmetra',
     'Torbjörn',
     'Tracer',
+    'Vendetta',
     'Venture',
     'Widowmaker',
   ];
