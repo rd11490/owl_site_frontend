@@ -63,6 +63,12 @@ export class ColorMappingService {
       Vendetta: '#961a1cff', // Added Vendetta as a hero
       Venture: '#00ff99', // Bright mint
       Widowmaker: '#9370db', // Medium purple matching her skin
+      // New Heroes
+      Anran: '#e06666', // Coral Red for Anran
+      Mizuki: '#3caa78ff', // Soft Blue for Mizuki
+      Domina: '#4220daff', // Royal Purple for Domina
+      Emre: '#db8522ff', // Golden Yellow for Emre
+      JetpackCat: '#eee16bff', // Orange for JetpackCat
     },
     defaultColor: '#808080', // Default gray
   };

@@ -47,11 +47,13 @@ export class HeroSelectorComponent {
     'Baptiste',
     'Brigitte',
     'Illari',
+    'Jetpack Cat',
     'Juno',
     'Kiriko',
     'Lifeweaver',
     'Lúcio',
     'Mercy',
+    'Mizuki',
     'Moira',
     'Wuyang',
     'Zenyatta',
@@ -59,6 +61,7 @@ export class HeroSelectorComponent {
 
   readonly tankHeroes = [
     'D.Va',
+    'Domina',
     'Doomfist',
     'Hazard',
     'Junker Queen',
@@ -74,10 +77,12 @@ export class HeroSelectorComponent {
   ];
 
   readonly dpsHeroes = [
+    'Anran',
     'Ashe',
     'Bastion',
     'Cassidy',
     'Echo',
+    'Emre',
     'Freja',
     'Genji',
     'Hanzo',
