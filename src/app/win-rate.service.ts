@@ -43,7 +43,11 @@ export class WinRateService {
         ),
       );
 
-      return response;
+      // Filter out invalid winRate values in each WinRateData
+      return response.map((entry) => ({
+        ...entry,
+        data: entry.data.filter((d) => d.winRate >= 0 && d.winRate <= 100),
+      }));
     } finally {
       this.loadingSubject.next(false);
     }
@@ -72,13 +76,18 @@ export class WinRateService {
     }
 
     const data = await this.getWinRates(params);
+    // Also filter here for safety (in case getWinRates is bypassed)
+    const filteredData = data.map((entry) => ({
+      ...entry,
+      data: entry.data.filter((d) => d.winRate >= 0 && d.winRate <= 100),
+    }));
     this.cache.set(cacheKey, {
-      data,
+      data: filteredData,
       timestamp: Date.now(),
       params,
     });
 
-    return data;
+    return filteredData;
   }
 
   private createCacheKey(params: WinRateRequest): string {
