@@ -90,6 +90,7 @@ export class HeroSelectorComponent {
     'Mei',
     'Pharah',
     'Reaper',
+    'Sierra',
     'Sojourn',
     'Soldier: 76',
     'Sombra',

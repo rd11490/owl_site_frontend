@@ -39,5 +39,13 @@ export const PATCH_DATES: PatchInfo[] = [
     {
         date: '2026-03-10',
         title: '2026 Season 1 Mid Season Update'
+    },
+    {
+        date: '2026-04-14',
+        title: '2026 Season 2'
+    },
+    {
+        date: '2026-04-17',
+        title: '2026 Season 2 - Hotfix 1'
     }
 ];

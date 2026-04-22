@@ -54,6 +54,7 @@ export class ColorMappingService {
       Mei: '#87ceeb', // Light blue matching her ice theme
       Pharah: '#4682b4', // Steel blue matching her armor
       Reaper: '#36454f', // Charcoal matching his theme
+      Sierra: '#fe8da8ff', // Pink matching her theme
       Sojourn: '#b8860b', // Dark golden matching her design
       'Soldier: 76': '#b22222', // Firebrick red matching his jacket
       Sombra: '#9370db', // Medium purple matching her theme
