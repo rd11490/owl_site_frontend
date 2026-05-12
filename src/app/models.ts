@@ -42,6 +42,7 @@ export interface SearchRequest {
 export interface WinRateDataPoint {
   winRate: number;
   pickRate: number;
+  banRate: number;
   date: string;
 }
 

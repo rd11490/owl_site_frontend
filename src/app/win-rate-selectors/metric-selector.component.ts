@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-export type MetricType = 'Win Rate' | 'Pick Rate';
+export type MetricType = 'Win Rate' | 'Pick Rate' | 'Ban Rate';
 
 @Component({
   selector: 'metric-selector',
@@ -104,7 +104,7 @@ export class MetricSelectorComponent {
 
   metricControl = new FormControl<MetricType>('Win Rate');
 
-  readonly metrics: MetricType[] = ['Win Rate', 'Pick Rate'];
+  readonly metrics: MetricType[] = ['Win Rate', 'Pick Rate', 'Ban Rate'];
 
   constructor() {
     this.metricControl.valueChanges.subscribe((value) => {

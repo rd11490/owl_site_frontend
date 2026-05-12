@@ -7,6 +7,7 @@ export interface RawDataPoint {
   date: string;
   winRate: number;
   pickRate: number;
+  banRate: number;
 }
 
 export interface DataPoint {

@@ -535,7 +535,7 @@ export class WinRatePlotComponent implements OnInit, OnDestroy, AfterViewInit, O
       -this.dimensions.height / 2,
       -this.dimensions.margin.left + 20,
       'rotate(-90)',
-      this.metric === 'Win Rate' ? 'Win Rate (%)' : 'Pick Rate (%)'
+      this.metric === 'Win Rate' ? 'Win Rate (%)' : this.metric === 'Pick Rate' ? 'Pick Rate (%)' : 'Ban Rate (%)'
     );
   }
 

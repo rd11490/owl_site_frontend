@@ -19,7 +19,7 @@ export class DataTransformService {
           const date = new Date(year, month - 1, day); // month is 0-based
           return {
             date,
-            value: metric === 'Win Rate' ? point.winRate : point.pickRate,
+            value: metric === 'Win Rate' ? point.winRate : metric === 'Pick Rate' ? point.pickRate : point.banRate,
             hero: series.hero,
             map: series.map,
             rank: series.rank,

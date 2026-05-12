@@ -4,6 +4,7 @@ export interface WinRateData {
     date: string;
     winRate: number;
     pickRate: number;
+    banRate: number;
   }[];
   metadata: {
     hero?: string;
